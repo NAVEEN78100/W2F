@@ -25,7 +25,7 @@ export default function ExplorePage() {
 
   useEffect(() => {
     const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
-    fetch(base + '/explore/districts')
+    fetch(base + '/api/explore/districts')
       .then((r) => r.json())
       .then((data) => { if (data?.districts) setDistricts(data.districts) })
       .catch(() => {})
@@ -64,20 +64,21 @@ export default function ExplorePage() {
   })
 
   const restaurantLogos = [
-    { name: 'SSL', logo: '🍛' },
-    { name: 'TSC', logo: '☕' },
-    { name: 'DD', logo: '🥞' },
-    { name: 'UG', logo: '🍖' },
-    { name: 'SM', logo: '🍲' },
-    { name: 'CC', logo: '🦞' },
-    { name: 'MB', logo: '🌮' },
-    { name: 'CCH', logo: '🍲' },
-    { name: 'TMM', logo: '🫓' },
-    { name: 'TT', logo: '�' },
-    { name: 'SS', logo: '🍰' },
-    { name: 'CCC', logo: '☕' },
-    { name: 'TNT', logo: '🥞' },
-    { name: 'TNB', logo: '☕' }
+    { name: 'Indian', logo: '🍛' },
+    { name: 'Chinese', logo: '🥡' },
+    { name: 'Italian', logo: '🍝' },
+    { name: 'Thai', logo: '🍜' },
+    { name: 'Mexican', logo: '🌮' },
+    { name: 'BBQ', logo: '🍖' },
+    { name: 'Seafood', logo: '🦞' },
+    { name: 'Cafe', logo: '☕' },
+    { name: 'Desserts', logo: '🍰' },
+    { name: 'Vegan', logo: '🥗' },
+    { name: 'Biryani', logo: '🍚' },
+    { name: 'Tandoori', logo: '🍗' },
+    { name: 'Noodles', logo: '🍜' },
+    { name: 'Pizza', logo: '🍕' },
+    { name: 'Burgers', logo: '🍔' }
   ];
 
   return (
@@ -109,11 +110,7 @@ export default function ExplorePage() {
                 Discover authentic local restaurants paired with strong curation and delightful experiences.
                 Manage your food journey confidently and securely.
               </p>
-              <div className="mt-4 flex md:justify-end">
-                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white rounded-full px-4 py-2">
-                  Explore Now
-                </Button>
-              </div>
+              {/* Removed Explore Now button as requested */}
             </div>
           </div>
 
@@ -147,9 +144,7 @@ export default function ExplorePage() {
                   className="inline-flex items-center gap-2 px-4 h-12 min-w-[92px] bg-transparent rounded-xl hover:scale-105 transition-transform flex-shrink-0 border border-white/40 text-white"
                 >
                   <span className="text-2xl leading-none">{r.logo}</span>
-                  <span className="text-sm font-semibold tracking-wide">
-                    {(r.name || '').toUpperCase().slice(0, 7)}
-                  </span>
+                  <span className="text-sm font-semibold tracking-wide">{r.name}</span>
                 </div>
               ))}
             </div>
@@ -164,9 +159,7 @@ export default function ExplorePage() {
                   className="inline-flex items-center gap-2 px-4 h-12 min-w-[92px] bg-transparent rounded-xl hover:scale-105 transition-transform flex-shrink-0 border border-white/40 text-white"
                 >
                   <span className="text-2xl leading-none">{r.logo}</span>
-                  <span className="text-sm font-semibold tracking-wide">
-                    {(r.name || '').toUpperCase().slice(0, 7)}
-                  </span>
+                  <span className="text-sm font-semibold tracking-wide">{r.name}</span>
                 </div>
               ))}
             </div>
@@ -209,6 +202,7 @@ export default function ExplorePage() {
             <div className="flex gap-4 items-center">
               <div className="relative flex-1 max-w-lg">
                 <input
+                  suppressHydrationWarning
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}

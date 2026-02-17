@@ -1,16 +1,16 @@
 import { Restaurant } from '@/types/restaurant'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
 export async function fetchRestaurants(): Promise<Restaurant[]> {
-  const response = await fetch(`${API_URL}/restaurants/all`)
+  const response = await fetch(`${API_URL}/api/restaurants/all`)
   const data = await response.json()
   if (!data.ok) throw new Error(data.error)
   return data.restaurants
 }
 
 export async function updateRestaurant(id: number, restaurant: Partial<Restaurant>): Promise<void> {
-  const response = await fetch(`${API_URL}/restaurants/${id}`, {
+  const response = await fetch(`${API_URL}/api/restaurants/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export async function updateRestaurant(id: number, restaurant: Partial<Restauran
 }
 
 export async function deleteRestaurant(id: number): Promise<void> {
-  const response = await fetch(`${API_URL}/restaurants/${id}`, {
+  const response = await fetch(`${API_URL}/api/restaurants/${id}`, {
     method: 'DELETE',
     headers: {
       // Add auth header here
@@ -35,7 +35,7 @@ export async function deleteRestaurant(id: number): Promise<void> {
 }
 
 export async function addRestaurant(restaurant: Omit<Restaurant, 'id'>): Promise<Restaurant> {
-  const response = await fetch(`${API_URL}/restaurants`, {
+  const response = await fetch(`${API_URL}/api/restaurants`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

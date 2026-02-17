@@ -1,13 +1,15 @@
 ﻿:root {
     --brand: #ff4d3d;
-    --bg: #0f2a33;
-    --card-bg: #fff;
-    --text: #0e141b;
-    --muted: #5b6b75;
+    --brand-2: #ff7a59;
+    --bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --text: #101723;
+    --muted: #5f6b7a;
     --radius: 18px;
-    --shadow: 0 12px 28px rgba(0,0,0,.08);
+    --shadow: 0 18px 40px rgba(16, 24, 40, .12);
     --success: #28a745;
     --error: #dc3545;
+    --ring: rgba(255, 77, 61, 0.22);
 }
 
 * {
@@ -18,7 +20,9 @@ body {
     margin: 0;
     font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
     color: var(--text);
-    background: var(--bg);
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(255, 122, 89, 0.16), transparent 60%),
+                radial-gradient(900px 520px at 100% 0%, rgba(255, 77, 61, 0.14), transparent 55%),
+                var(--bg);
 }
 
 .container {
@@ -27,9 +31,22 @@ body {
 }
 
 .hero {
-    background: var(--brand);
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
     color: #fff;
-    padding: 56px 0;
+    padding: 64px 0 72px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 360px;
+    height: 360px;
+    background: rgba(255,255,255,0.15);
+    filter: blur(10px);
+    border-radius: 50%;
 }
 
 .hero-inner {
@@ -39,8 +56,9 @@ body {
 }
 
 .hero-text h1 {
-    font-size: 48px;
-    margin: 0 0 8px;
+    font-size: 50px;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
 }
 
 .hero-text p {
@@ -50,16 +68,19 @@ body {
 }
 
 .partners {
-    background: #fff;
-    margin-top: -24px;
-    border-radius: 24px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(6px);
+    margin-top: -28px;
+    border-radius: 26px;
     box-shadow: var(--shadow);
-    padding: 28px;
+    padding: 30px;
+    border: 1px solid #eef2f6;
 }
 
 .partners-head h2 {
     margin: 0 0 6px;
-    font-size: 22px;
+    font-size: 24px;
+    letter-spacing: -0.01em;
 }
 
 .partners-head p {
@@ -90,18 +111,18 @@ body {
     background: var(--card-bg);
     border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    box-shadow: 0 10px 24px rgba(16, 24, 40, .08);
     cursor: pointer;
     transform: translateZ(0);
-    transition: transform .18s ease, box-shadow .18s ease;
-    border: 1px solid #eef2f4;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    border: 1px solid #eef2f6;
 }
 
     .partner-card:focus,
     .partner-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0,0,0,.14);
-        border-color: var(--brand);
+        transform: translateY(-6px);
+        box-shadow: 0 18px 42px rgba(16, 24, 40, .16);
+        border-color: rgba(255, 77, 61, 0.5);
     }
 
         .partner-card:hover h3 {
@@ -135,6 +156,183 @@ body {
         font-size: 14px;
     }
 
+    .faq-section {
+        margin: 28px auto 0;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 26px;
+        box-shadow: var(--shadow);
+        padding: 34px;
+        border: 1px solid #eef2f6;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-section::before {
+        content: "";
+        position: absolute;
+        inset: -40% -20% auto auto;
+        width: 320px;
+        height: 320px;
+        background: rgba(255, 122, 89, 0.12);
+        filter: blur(12px);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .faq-head h2 {
+        margin: 0 0 6px;
+        font-size: 26px;
+        letter-spacing: -0.01em;
+    }
+
+    .faq-head p {
+        margin: 0 0 18px;
+        color: var(--muted);
+    }
+
+    .faq-grid {
+        display: grid;
+        grid-template-columns: minmax(220px, 360px) 1fr;
+        gap: 24px;
+        align-items: stretch;
+    }
+
+    .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .faq-item {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid #e6edf3;
+        background: #fff;
+        color: #1b2431;
+        text-align: left;
+        cursor: pointer;
+        font-weight: 600;
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        box-shadow: 0 6px 18px rgba(16, 24, 40, .08);
+    }
+
+    .faq-item:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 77, 61, 0.5);
+    }
+
+    .faq-item.is-active {
+        border-color: var(--brand);
+        box-shadow: 0 12px 30px rgba(255, 77, 61, .2);
+        color: var(--brand);
+    }
+
+    .faq-panel {
+        min-height: 220px;
+        background: linear-gradient(135deg, rgba(255, 77, 61, 0.08), rgba(255, 122, 89, 0.08));
+        border-radius: 18px;
+        padding: 22px 24px;
+        border: 1px solid rgba(255, 77, 61, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-panel::after {
+        content: "";
+        position: absolute;
+        inset: auto auto -60px -60px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 77, 61, 0.08);
+        border-radius: 50%;
+        filter: blur(8px);
+    }
+
+    .faq-group {
+        display: none;
+        animation: faqFadeIn .35s ease;
+    }
+
+    .faq-group.is-visible {
+        display: block;
+    }
+
+    .faq-qa {
+        width: 100%;
+        background: #fff;
+        border: 1px solid #e6edf3;
+        border-radius: 14px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 10px;
+        box-shadow: 0 8px 18px rgba(16, 24, 40, .08);
+        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .faq-qa:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 77, 61, 0.5);
+    }
+
+    .faq-qa.is-open {
+        border-color: var(--brand);
+        box-shadow: 0 12px 30px rgba(255, 77, 61, .2);
+        color: var(--brand);
+    }
+
+    .faq-plus {
+        font-size: 22px;
+        line-height: 1;
+        font-weight: 700;
+        transition: transform .2s ease;
+    }
+
+    .faq-qa.is-open .faq-plus {
+        transform: rotate(45deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: max-height .3s ease, opacity .3s ease, transform .3s ease;
+        padding: 0 6px;
+    }
+
+    .faq-answer.is-open {
+        max-height: 220px;
+        opacity: 1;
+        transform: translateY(0);
+        padding: 0 6px 14px;
+    }
+
+    .faq-answer p {
+        margin: 0;
+        color: #1b2431;
+        line-height: 1.6;
+    }
+
+    @keyframes faqFadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+        .faq-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .faq-panel {
+            min-height: 200px;
+        }
+    }
+
 .backdrop {
     position: fixed;
     inset: 0;
@@ -153,14 +351,15 @@ body {
 .drawer {
     position: fixed;
     inset: 0 0 0 auto;
-    width: min(560px, 92vw);
+    width: min(580px, 94vw);
     background: #fff;
-    box-shadow: -16px 0 40px rgba(0,0,0,.18);
+    box-shadow: -20px 0 50px rgba(16, 24, 40, .2);
     transform: translateX(105%);
     transition: transform .28s ease;
     z-index: 999;
     display: flex;
     flex-direction: column;
+    border-radius: 18px 0 0 18px;
 }
 
     .drawer.open {
@@ -194,7 +393,7 @@ body {
     font-size: 26px;
     line-height: 1;
     cursor: pointer;
-    box-shadow: 0 0 0 1px #e7edf0;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, .12);
 }
 
 .drawer-body {
@@ -217,6 +416,12 @@ body {
     margin-top: 18px;
 }
 
+.form-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
     .form-grid .full {
         grid-column: 1 / -1;
     }
@@ -234,9 +439,9 @@ input[type="tel"],
 input[type="password"],
 textarea {
     width: 100%;
-    background: #f7f8fa;
-    border: 1.5px solid #e3e5eb;
-    border-radius: 10px;
+    background: #f7f9fc;
+    border: 1.5px solid #e3e8ef;
+    border-radius: 12px;
     padding: 14px 16px;
     font-size: 15px;
     color: #232b36;
@@ -265,7 +470,7 @@ textarea {
     textarea:focus {
         border-color: var(--brand);
         background: #fff;
-        box-shadow: 0 2px 14px 0 rgba(255, 77, 61, 0.08);
+        box-shadow: 0 0 0 4px var(--ring);
     }
 
 label span {
@@ -277,6 +482,11 @@ label span {
 
 .form-grid label {
     margin-bottom: 10px;
+}
+
+label {
+    font-weight: 600;
+    color: #1c2430;
 }
 
 @media (max-width: 640px) {
@@ -321,18 +531,20 @@ label span {
 .btn-primary {
     margin-top: 10px;
     border: 0;
-    background: var(--brand);
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-weight: 600;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-weight: 700;
     cursor: pointer;
     width: 100%;
-    transition: background-color 0.3s ease;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    box-shadow: 0 10px 18px rgba(255, 77, 61, .2);
 }
 
     .btn-primary:hover {
-        background: #e8442e;
+        transform: translateY(-1px);
+        filter: brightness(1.02);
     }
 
     .btn-primary:disabled {
@@ -358,8 +570,9 @@ label span {
     width: 100%;
     aspect-ratio: 16/9;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: 14px;
     margin-bottom: 12px;
+    box-shadow: 0 10px 24px rgba(16, 24, 40, .14);
 }
 
     .drawer-img-wrap img {

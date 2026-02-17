@@ -11,8 +11,16 @@ const FeedbackPage = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalCategory, setModalCategory] = useState('Feedback');
 
   const handleCardClick = (card) => {
+    if (card.category === 'ReportProblem') {
+      setIsDrawerOpen(false);
+      setSelectedCard(null);
+      setModalCategory('ReportProblem');
+      setIsModalOpen(true);
+      return;
+    }
     setSelectedCard(card);
     setIsDrawerOpen(true);
   };
@@ -23,6 +31,7 @@ const FeedbackPage = () => {
   };
 
   const handleOpenModal = () => {
+    setModalCategory('Feedback');
     setIsModalOpen(true);
   };
 
@@ -45,7 +54,8 @@ const FeedbackPage = () => {
       
       <ContactFormModal 
         isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
+        onClose={handleCloseModal}
+        initialCategory={modalCategory}
       />
     </div>
   );

@@ -5,7 +5,7 @@ let db
 
 async function connect(uri, dbName) {
   if (db) return { client, db }
-  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  client = new MongoClient(uri)
   await client.connect()
   db = client.db(dbName)
   console.log(`Connected to MongoDB database: ${dbName}`)

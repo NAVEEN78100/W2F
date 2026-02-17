@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 // switched to server-side endpoints for OTP and submit
 
-const ContactFormModal = ({ isOpen, onClose }) => {
+const ContactFormModal = ({ isOpen, onClose, initialCategory = 'Feedback' }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     countryCode: '+1',
     phone: '',
-    category: 'Feedback',
+    category: initialCategory,
+    businessName: '',
+    location: '',
+    issueType: '',
+    orderId: '',
+    platform: 'Web',
+    device: '',
+    appVersion: '',
+    preferredContact: 'Email',
+    urgency: 'Normal',
+    stepsToReproduce: '',
     message: '',
     acceptTerms: false,
     attachment: null
@@ -27,6 +37,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const [showTermsDrawer, setShowTermsDrawer] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   // will use server endpoints: POST /api/feedback/otp and POST /api/feedback/submit
 
@@ -49,6 +60,11 @@ const ContactFormModal = ({ isOpen, onClose }) => {
     }
     return () => clearInterval(interval);
   }, [otpState.otpSent, otpState.remainingTime]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setFormData(prev => ({ ...prev, category: initialCategory }));
+  }, [isOpen, initialCategory]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -148,30 +164,37 @@ const ContactFormModal = ({ isOpen, onClose }) => {
 
     if (!formData.phone.trim()) {
       newErrors.push('Phone number is required.');
-    } else if (formData.phone.length > 10) {
-      newErrors.push('Phone number should not exceed 10 characters.');
+    } else if (formData.phone.length > 15) {
+      newErrors.push('Phone number should not exceed 15 characters.');
+    }
+
+    if (!formData.businessName.trim()) {
+      newErrors.push('Business or restaurant name is required.');
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.push('Location is required.');
+    }
+
+    if (!formData.issueType.trim()) {
+      newErrors.push('Issue type is required.');
     }
 
     if (!formData.message.trim()) {
       newErrors.push('Message is required.');
     }
 
-    // File validation for Bug Bounty
-    if (formData.category === 'BugBounty') {
-      if (!formData.attachment) {
-        newErrors.push('Attachment is required for Bug Bounty reports.');
-      } else {
-        if (formData.attachment.size > 2 * 1024 * 1024) {
-          newErrors.push('File size should not exceed 2MB.');
-        }
-        
-        const allowedExtensions = ['.jpg', '.jpeg'];
-        const fileName = formData.attachment.name.toLowerCase();
-        const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-        
-        if (!allowedExtensions.includes(fileExtension)) {
-          newErrors.push('Only JPG/JPEG files are allowed for Bug Bounty.');
-        }
+    if (formData.attachment) {
+      if (formData.attachment.size > 2 * 1024 * 1024) {
+        newErrors.push('File size should not exceed 2MB.');
+      }
+
+      const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+      const fileName = formData.attachment.name.toLowerCase();
+      const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        newErrors.push('Only JPG, JPEG, or PNG files are allowed.');
       }
     }
 
@@ -195,6 +218,16 @@ const ContactFormModal = ({ isOpen, onClose }) => {
         email: formData.email,
         phone: `${formData.countryCode} ${formData.phone}`,
         category: formData.category,
+        businessName: formData.businessName,
+        location: formData.location,
+        issueType: formData.issueType,
+        orderId: formData.orderId,
+        platform: formData.platform,
+        device: formData.device,
+        appVersion: formData.appVersion,
+        preferredContact: formData.preferredContact,
+        urgency: formData.urgency,
+        stepsToReproduce: formData.stepsToReproduce,
         message: formData.message,
         otp: otpState.otpInput || null
       };
@@ -210,7 +243,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
         return;
       }
 
-      alert('Thank you! Your enquiry has been submitted successfully.');
+      setSuccessMessage('Report submitted! Our team will get back to you shortly.');
 
       // Reset form
       setFormData({
@@ -218,7 +251,17 @@ const ContactFormModal = ({ isOpen, onClose }) => {
         email: '',
         countryCode: '+1',
         phone: '',
-        category: 'Feedback',
+        category: initialCategory,
+        businessName: '',
+        location: '',
+        issueType: '',
+        orderId: '',
+        platform: 'Web',
+        device: '',
+        appVersion: '',
+        preferredContact: 'Email',
+        urgency: 'Normal',
+        stepsToReproduce: '',
         message: '',
         acceptTerms: false,
         attachment: null
@@ -236,7 +279,10 @@ const ContactFormModal = ({ isOpen, onClose }) => {
 
       setShowAdditionalFields(false);
       setErrors([]);
-      onClose();
+      setTimeout(() => {
+        setSuccessMessage('');
+        onClose();
+      }, 1600);
     } catch (error) {
       console.error('Error submitting form:', error);
       setErrors(['An error occurred while processing your submission. Please try again.']);
@@ -257,11 +303,18 @@ const ContactFormModal = ({ isOpen, onClose }) => {
         <button className="modal-close" onClick={onClose}>×</button>
         
         <div className="modal-header">
-          <h3>Reach Out to Us</h3>
+          <img src="/wwf-logo.png" alt="WWF" className="modal-logo" />
+          <h3>Report a Problem</h3>
         </div>
 
         <div className="form-container">
           <form onSubmit={handleSubmit}>
+            {successMessage && (
+              <div className="form-notice success">
+                {successMessage}
+              </div>
+            )}
+
             {errors.length > 0 && (
               <div className="error-messages" style={{ 
                 background: '#fee', 
@@ -356,6 +409,126 @@ const ContactFormModal = ({ isOpen, onClose }) => {
             {showAdditionalFields && (
               <div id="additionalFields">
                 <div className="form-group">
+                  <label htmlFor="businessName">Business / Restaurant Name *</label>
+                  <input
+                    type="text"
+                    id="businessName"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Spice Avenue"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="location">Location *</label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    placeholder="City, area, or address"
+                    required
+                  />
+                </div>
+
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="issueType">Issue Type *</label>
+                    <select
+                      id="issueType"
+                      name="issueType"
+                      value={formData.issueType}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select issue type</option>
+                      <option value="Listing">Listing or profile issue</option>
+                      <option value="Menu">Menu or pricing issue</option>
+                      <option value="Order">Order or delivery issue</option>
+                      <option value="Payments">Payments or billing issue</option>
+                      <option value="Technical">App or website bug</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="orderId">Order ID (if any)</label>
+                    <input
+                      type="text"
+                      id="orderId"
+                      name="orderId"
+                      value={formData.orderId}
+                      onChange={handleInputChange}
+                      placeholder="Optional"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="platform">Platform</label>
+                    <select
+                      id="platform"
+                      name="platform"
+                      value={formData.platform}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Web">Web</option>
+                      <option value="Android">Android</option>
+                      <option value="iOS">iOS</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="device">Device</label>
+                    <input
+                      type="text"
+                      id="device"
+                      name="device"
+                      value={formData.device}
+                      onChange={handleInputChange}
+                      placeholder="e.g., iPhone 14 Pro"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="appVersion">App Version</label>
+                    <input
+                      type="text"
+                      id="appVersion"
+                      name="appVersion"
+                      value={formData.appVersion}
+                      onChange={handleInputChange}
+                      placeholder="e.g., 2.3.1"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="preferredContact">Preferred Contact</label>
+                    <select
+                      id="preferredContact"
+                      name="preferredContact"
+                      value={formData.preferredContact}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Email">Email</option>
+                      <option value="Phone">Phone</option>
+                      <option value="WhatsApp">WhatsApp</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="urgency">Urgency</label>
+                    <select
+                      id="urgency"
+                      name="urgency"
+                      value={formData.urgency}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Normal">Normal</option>
+                      <option value="High">High</option>
+                      <option value="Critical">Critical</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
                   <label htmlFor="phone">Phone Number *</label>
                   <div className="phone-input-wrapper">
                     <select
@@ -376,7 +549,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="1234567890"
-                      maxLength="10"
+                      maxLength="15"
                       required
                     />
                   </div>
@@ -391,23 +564,23 @@ const ContactFormModal = ({ isOpen, onClose }) => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="Feedback">Feedback/Improvements</option>
-                    <option value="EarlyAccess">Request Early Access</option>
-                    <option value="BugBounty">Bug Bounty/Report Issue</option>
+                    <option value="Feedback">Product Feedback</option>
+                    <option value="PartnerSupport">Partner Support</option>
+                    <option value="ReportProblem">Report a Problem</option>
                   </select>
                 </div>
 
-                {formData.category === 'BugBounty' && (
+                {formData.category === 'ReportProblem' && (
                   <div className="form-group" id="fileUploadSection">
-                    <label htmlFor="attachment">Attach Screenshot/Evidence *</label>
+                    <label htmlFor="attachment">Attach Screenshot/Evidence</label>
                     <input
                       type="file"
                       id="attachment"
                       name="attachment"
                       onChange={handleInputChange}
-                      accept=".jpg,.jpeg"
+                      accept=".jpg,.jpeg,.png"
                     />
-                    <span className="file-tip">Only JPG/JPEG files, max 2MB</span>
+                    <span className="file-tip">JPG/PNG files, max 2MB</span>
                   </div>
                 )}
 
@@ -418,9 +591,21 @@ const ContactFormModal = ({ isOpen, onClose }) => {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Tell us more..."
+                    placeholder="Describe the issue or request in detail..."
                     rows="5"
                     required
+                  ></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="stepsToReproduce">Steps to Reproduce</label>
+                  <textarea
+                    id="stepsToReproduce"
+                    name="stepsToReproduce"
+                    value={formData.stepsToReproduce}
+                    onChange={handleInputChange}
+                    placeholder="Step 1, Step 2, Step 3..."
+                    rows="4"
                   ></textarea>
                 </div>
 
@@ -450,7 +635,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
                   id="submitEnquiryBtn"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
+                  {isSubmitting ? 'Submitting...' : 'Submit Report'}
                 </button>
               </div>
             )}

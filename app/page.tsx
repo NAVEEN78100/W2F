@@ -199,7 +199,7 @@ export default function HomePage() {
         transition={{ duration: 0.8, delay: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-full px-3 sm:px-6 shadow-2xl border border-white/20 py-1">
-          <div className="flex items-center space-x-2 sm:space-x-6">
+          <div className="flex items-center justify-center space-x-2 sm:space-x-6">
             <Link
               href="/"
               className="flex flex-col items-center space-y-1 px-2 sm:px-4 py-2 rounded-full hover:bg-orange-100 transition-all duration-300 group"
@@ -547,8 +547,9 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
             <div className="space-y-8">
+              {/* Heading */}
               <motion.h2
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight text-left"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -556,8 +557,9 @@ export default function HomePage() {
                 Pocket Friendly Options in Plenty
               </motion.h2>
 
+              {/* Description */}
               <motion.p
-                className="text-xl text-white/90 leading-relaxed"
+                className="text-xl text-white/90 leading-relaxed text-left"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -565,24 +567,12 @@ export default function HomePage() {
                 Elevate your dining experience in a single tap. Join thousands of food lovers today.
               </motion.p>
 
+              {/* App Store Buttons */}
               <motion.div
-                className="inline-block"
+                className="flex flex-col sm:flex-row gap-4 items-start"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                <Link href="/explore">
-                  <Button className="bg-black text-white hover:bg-gray-800 rounded-xl px-8 py-4 text-lg transition-all duration-300 ease-out hover:scale-105">
-                    Explore Restaurants
-                  </Button>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 pt-8"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.0, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <Link 
                   href="#" 
@@ -607,6 +597,20 @@ export default function HomePage() {
                     height={60}
                     className="h-[60px] w-[155px] object-contain"
                   />
+                </Link>
+              </motion.div>
+
+              {/* Explore Button */}
+              <motion.div
+                className="pt-4"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.0, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <Link href="/explore">
+                  <Button className="bg-black text-white hover:bg-gray-800 rounded-xl px-8 py-4 text-lg transition-all duration-300 ease-out hover:scale-105">
+                    Explore Restaurants
+                  </Button>
                 </Link>
               </motion.div>
             </div>

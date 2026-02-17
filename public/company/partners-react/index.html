@@ -58,6 +58,127 @@
       </div>
     </section>
 
+    <section class="faq-section container" aria-labelledby="faqTitle">
+      <header class="faq-head">
+        <h2 id="faqTitle">Partner FAQ</h2>
+        <p>Pick a topic to see related questions. Tap the plus icon to reveal answers.</p>
+      </header>
+
+      <div class="faq-grid" aria-label="Frequently asked questions">
+        <div class="faq-list" role="tablist" aria-label="FAQ categories">
+          <button class="faq-item is-active" type="button" role="tab" aria-selected="true" data-group="0">
+            Getting started
+          </button>
+          <button class="faq-item" type="button" role="tab" aria-selected="false" data-group="1">
+            Onboarding & documents
+          </button>
+          <button class="faq-item" type="button" role="tab" aria-selected="false" data-group="2">
+            Menu & updates
+          </button>
+          <button class="faq-item" type="button" role="tab" aria-selected="false" data-group="3">
+            Visibility & growth
+          </button>
+          <button class="faq-item" type="button" role="tab" aria-selected="false" data-group="4">
+            Pricing & support
+          </button>
+        </div>
+
+        <div class="faq-panel" role="tabpanel" aria-live="polite">
+          <div class="faq-group is-visible" data-group-panel="0">
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>How do I become a partner?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Choose your category, open the partnership drawer, and submit the form. We will review your details and reach out to confirm your listing.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>Who can list on the platform?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Home bakers, restaurants, cafes, bars, and hangout spots that meet local food safety guidelines are welcome.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>What information should I prepare?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Basic business details, menu highlights, pricing range, delivery timings, and your best food images.</p>
+            </div>
+          </div>
+
+          <div class="faq-group" data-group-panel="1">
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>What documents are required for onboarding?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>We typically need a valid food license, business registration proof, and contact verification for the listing.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>How long does approval take?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Most applications are approved within 2 to 3 business days once we receive complete details.</p>
+            </div>
+          </div>
+
+          <div class="faq-group" data-group-panel="2">
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>Can I update my menu or pricing later?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Yes. You can request updates any time for pricing, photos, delivery time, and featured items.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>How do I showcase seasonal dishes?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Share seasonal highlights and we can tag them for special visibility in explore and promotions.</p>
+            </div>
+          </div>
+
+          <div class="faq-group" data-group-panel="3">
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>How do customers discover my listing?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Your listing appears in explore, category highlights, and curated collections based on cuisine and location.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>Can I be featured on the homepage?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Featured placements are available based on quality, demand, and promotional slots.</p>
+            </div>
+          </div>
+
+          <div class="faq-group" data-group-panel="4">
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>Is there a fee to join the platform?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Joining is free. Optional promotional boosts can be discussed if you want extra visibility.</p>
+            </div>
+            <button class="faq-qa" type="button" aria-expanded="false">
+              <span>How do I get partner support?</span>
+              <span class="faq-plus">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Our partner team is available via email and will assist with listing updates and campaign planning.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Drawer / side panel markup required by partnerships.js -->
     <div class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-labelledby="drawerTitle">
       <button class="drawer-close" data-close aria-label="Close">&times;</button>
@@ -78,18 +199,10 @@
             <div class="full" style="margin-bottom:0">
               <label for="leadEmail">Email Address *</label>
               <input name="Email" id="leadEmail" type="email" required maxlength="100" placeholder="Enter your email address" autocomplete="email" />
-              <button type="button" id="sendOtpBtn" class="btn-primary">Send OTP</button>
-            </div>
-
-            <div class="full" id="otpSection" style="display:none">
-              <label for="otpInput">Enter OTP *</label>
-              <input type="text" id="otpInput" maxlength="6" placeholder="Enter the OTP sent to your email" inputmode="numeric" />
-              <button type="button" id="verifyOtpBtn" class="btn-primary">Verify OTP</button>
-              <div id="otpTimerDisplay" class="otp-timer"></div>
             </div>
           </div>
 
-          <div id="extraFields" style="display:none">
+          <div id="extraFields">
             <div class="form-grid">
               <div>
                 <label for="leadName">Full Name *</label>
@@ -99,24 +212,31 @@
                 <label for="leadPhone">Contact Number *</label>
                 <input name="Phone" id="leadPhone" required maxlength="30" placeholder="Enter phone number" />
               </div>
-              <div>
-                <label for="leadState">State *</label>
-                <select name="State" id="leadState" required>
-                  <option value="">Select State</option>
-                  <option>Delhi</option>
-                  <option>Maharashtra</option>
-                  <option>Karnataka</option>
-                </select>
-              </div>
               <div class="full">
                 <label for="leadLocation">Business Location / Address *</label>
                 <input name="Location" id="leadLocation" required maxlength="150" placeholder="Enter business address (Street, City, Pin)" />
+              </div>
+              <div class="full">
+                <label for="leadRemarks">Remarks</label>
+                <textarea name="Remarks" id="leadRemarks" maxlength="300" rows="4" placeholder="Add any remarks or additional details"></textarea>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="full" style="margin-bottom:0">
+                <button type="button" id="sendOtpBtn" class="btn-primary">Send OTP</button>
+              </div>
+              <div class="full" id="otpSection" style="display:none">
+                <label for="otpInput">Enter OTP *</label>
+                <input type="text" id="otpInput" maxlength="6" placeholder="Enter the OTP sent to your email" inputmode="numeric" />
+                <button type="button" id="verifyOtpBtn" class="btn-primary">Verify OTP</button>
+                <div id="otpTimerDisplay" class="otp-timer"></div>
               </div>
             </div>
 
             <div class="checkbox-group" style="margin:18px 0">
               <label class="checkbox-label">
-                <input type="checkbox" name="AcceptTerms" id="acceptTerms" value="true" disabled />
+                <input type="checkbox" name="AcceptTerms" id="acceptTerms" value="true" />
                 I have read and accept the <span id="showTermsLink" class="terms-link">terms and conditions</span> *
               </label>
             </div>
@@ -158,6 +278,63 @@
       <div class="modal-actions"><button id="modalOk" class="btn-primary">OK</button></div>
     </div>
 
+    <script>
+      (function () {
+        const items = Array.from(document.querySelectorAll('.faq-item'));
+        const groups = Array.from(document.querySelectorAll('.faq-group'));
+        if (!items.length || !groups.length) return;
+
+        const resetAccordions = (groupEl) => {
+          const qas = Array.from(groupEl.querySelectorAll('.faq-qa'));
+          qas.forEach((btn) => {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.classList.remove('is-open');
+            const answer = btn.nextElementSibling;
+            if (answer) answer.classList.remove('is-open');
+          });
+        };
+
+        const setActiveGroup = (index) => {
+          items.forEach((btn, i) => {
+            const active = i === index;
+            btn.classList.toggle('is-active', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          groups.forEach((group, i) => {
+            const active = i === index;
+            group.classList.toggle('is-visible', active);
+            if (active) resetAccordions(group);
+          });
+        };
+
+        items.forEach((btn, i) => {
+          btn.addEventListener('click', () => setActiveGroup(i));
+        });
+
+        groups.forEach((group) => {
+          const qas = Array.from(group.querySelectorAll('.faq-qa'));
+          qas.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const isOpen = btn.classList.contains('is-open');
+              qas.forEach((q) => {
+                q.classList.remove('is-open');
+                q.setAttribute('aria-expanded', 'false');
+                const ans = q.nextElementSibling;
+                if (ans) ans.classList.remove('is-open');
+              });
+              if (!isOpen) {
+                btn.classList.add('is-open');
+                btn.setAttribute('aria-expanded', 'true');
+                const answer = btn.nextElementSibling;
+                if (answer) answer.classList.add('is-open');
+              }
+            });
+          });
+        });
+
+        setActiveGroup(0);
+      })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script>try{emailjs.init("NKqMo7yjfTsoYYysu");}catch(e){console.warn('emailjs init failed',e)}</script>
     <script src="/company/partners/js/partnerships.js"></script>

@@ -65,11 +65,12 @@ export default function PhoneCardsAnimation({ featureCards }: PhoneCardsAnimatio
   ]
 
   return (
-    <div ref={containerRef} className="relative h-[100vh] overflow-hidden">
-      <div className="sticky top-0 left-0 w-full h-screen flex items-center justify-center px-4">
+    <div ref={containerRef} className="relative h-[100vh] overflow-hidden" suppressHydrationWarning>
+      <div className="sticky top-0 left-0 w-full h-screen flex items-center justify-center px-4 relative" suppressHydrationWarning>
         {/* Central Phone Mockup - Fixed Position */}
         <motion.div
           className="w-48 h-[380px] sm:w-56 sm:h-[440px] md:w-64 md:h-[500px] bg-gray-900 rounded-[2.5rem] p-2 sm:p-3 shadow-2xl z-20 relative mx-auto"
+          suppressHydrationWarning
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -94,7 +95,9 @@ export default function PhoneCardsAnimation({ featureCards }: PhoneCardsAnimatio
         {featureCards.map((card, index) => (
           <motion.div
             key={index}
+            initial={false}
             className={`absolute w-40 h-28 sm:w-48 sm:h-32 md:w-52 md:h-36 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-5 shadow-2xl flex flex-col justify-between z-30 border border-white/10`}
+            suppressHydrationWarning
             style={{
               x: cardTransforms[index]?.x || 0,
               y: cardTransforms[index]?.y || 0,
@@ -181,7 +184,7 @@ export default function PhoneCardsAnimation({ featureCards }: PhoneCardsAnimatio
         ))}
 
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 z-0"
+          className="absolute inset-0 bg-white z-0"
           style={{
             opacity: useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.3, 0.6, 0.6, 0.3]),
           }}

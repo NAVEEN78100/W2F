@@ -96,7 +96,7 @@ export default function AboutUs() {
       {/* Hero Section */}
       <section
         className="h-screen flex flex-col justify-center items-center text-white text-center px-6 relative"
-        style={{ backgroundColor: "#FF3B2E" }}
+        style={{ backgroundColor: "rgb(71, 198, 231)" }}
       >
         <span className="uppercase tracking-widest text-sm bg-white/20 px-4 py-1 rounded-full mb-6">
           A flagship product by BINI

@@ -68,7 +68,7 @@
             leadMsg.textContent = "";
             leadMsg.className = "lead-msg";
             otpSection.style.display = "none";
-            extraFields.style.display = "none";
+            extraFields.style.display = "block";
             sendOtpBtn.disabled = false;
             if (otpTimer) clearInterval(otpTimer);
             otpTimerDisplay.textContent = "";
@@ -106,6 +106,19 @@
     // Send OTP button clicked
     // Send OTP button clicked
     sendOtpBtn?.addEventListener("click", () => {
+        const requiredFields = [
+            { el: qs("#leadName"), label: "Full Name" },
+            { el: qs("#leadPhone"), label: "Contact Number" },
+            { el: qs("#leadLocation"), label: "Business Location / Address" }
+        ];
+        for (const field of requiredFields) {
+            if (!field.el || !String(field.el.value || "").trim()) {
+                leadMsg.textContent = `Please fill ${field.label} before requesting OTP.`;
+                leadMsg.className = "lead-msg error";
+                field.el?.focus();
+                return;
+            }
+        }
         const email = leadEmail.value.trim();
         if (!email) {
             leadMsg.textContent = "Please enter your email.";
@@ -118,9 +131,25 @@
         const originalText = sendOtpBtn.textContent;
         sendOtpBtn.innerHTML = '<span class="spinner"></span> Sending...';
 
+        if (typeof emailjs === "undefined" || typeof emailjs.send !== "function") {
+            leadMsg.textContent = "Email service is not available. Please try again later.";
+            leadMsg.className = "lead-msg error";
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = originalText;
+            return;
+        }
+
         generatedOtp = Math.floor(100000 + Math.random() * 900000);
 
-        emailjs.send("service_7yf1tan", "template_lphthdk", { email, otp: generatedOtp })
+        const templateParams = {
+            email,
+            to_email: email,
+            user_email: email,
+            recipient: email,
+            otp: generatedOtp
+        };
+
+        emailjs.send("service_7yf1tan", "template_lphthdk", templateParams)
             .then(() => {
                 leadMsg.textContent = "OTP sent to your email.";
                 leadMsg.className = "lead-msg success";
@@ -151,8 +180,9 @@
                 otpInput.disabled = false;
                 verifyOtpBtn.disabled = false;
             }).catch(err => {
-                console.error(err);
-                leadMsg.textContent = "Failed to send OTP.";
+                const errorText = err?.text || err?.message || "Failed to send OTP.";
+                console.error("EmailJS error:", err);
+                leadMsg.textContent = errorText;
                 leadMsg.className = "lead-msg error";
                 // Reset button state on error
                 sendOtpBtn.disabled = false;
@@ -173,7 +203,6 @@
             leadMsg.textContent = "OTP verified!";
             leadMsg.className = "lead-msg success";
 
-            extraFields.style.display = "block";
             otpSection.style.display = "none";
 
             clearInterval(otpTimer);

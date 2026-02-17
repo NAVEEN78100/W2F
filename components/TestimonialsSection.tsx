@@ -35,7 +35,7 @@ export default function TestimonialsSection() {
     <section className="py-20 bg-gradient-to-br from-orange-50 to-red-50 relative overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url(/thanx-full_service_restaurant_guide_to_customer_engagement-hero.avif)" }}
+        style={{ backgroundImage: "url(/food-photography.jpg.avif)" }}
       >
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
