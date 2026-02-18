@@ -11,7 +11,7 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-pink-500/20 to-purple-500/20 rounded-[55px] blur-2xl"></div>
 
       {/* Phone frame */}
-      <div className="relative w-[350px] h-[685px] bg-gradient-to-br from-slate-800 via-slate-900 to-black rounded-[48px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-[6px] border-slate-700/50 overflow-hidden">
+      <div className="relative w-[280px] h-[546px] bg-gradient-to-br from-slate-800 via-slate-900 to-black rounded-[48px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-[6px] border-slate-700/50 overflow-hidden">
         {/* Glossy overlay effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent rounded-[48px] pointer-events-none"></div>
 

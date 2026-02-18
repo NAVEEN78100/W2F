@@ -96,13 +96,13 @@ export default function AboutUs() {
       {/* Hero Section */}
       <section
         className="h-screen flex flex-col justify-center items-center text-white text-center px-6 relative"
-        style={{ backgroundColor: "rgb(71, 198, 231)" }}
+        style={{ backgroundColor: "hsl(59, 100%, 45%)" }}
       >
         <span className="uppercase tracking-widest text-sm bg-white/20 px-4 py-1 rounded-full mb-6">
           A flagship product by BINI
         </span>
 
-        <h1 className="text-6xl font-extrabold mb-6">Your Next-Gen App</h1>
+        <h1 className="text-6xl font-extrabold mb-6">You Next-Gen App</h1>
 
         <p className="max-w-3xl text-xl leading-relaxed mb-8">
           Wander With Food by BINI redefines your culinary experience in any

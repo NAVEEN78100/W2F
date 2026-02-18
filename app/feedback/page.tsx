@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { AlertCircle, Zap, Gift, X, Check } from 'lucide-react'
 
 export default function FeedbackPage() {
-  const [activeForm, setActiveForm] = useState<'problem' | 'beta' | 'bounty' | null>(null)
+  const router = useRouter()
+  const [activeForm, setActiveForm] = useState<'beta' | null>(null)
   const [formData, setFormData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
@@ -40,7 +42,15 @@ export default function FeedbackPage() {
   ]
 
   const handleCardClick = (id: string) => {
-    setActiveForm(id as 'problem' | 'beta' | 'bounty')
+    if (id === 'problem') {
+      window.location.href = 'http://localhost:5173/general-feedback'
+      return
+    }
+    if (id === 'bounty') {
+      window.location.href = 'http://localhost:5173/bug-bounty'
+      return
+    }
+    setActiveForm(id as 'beta')
     setFormData({})
   }
 
@@ -66,7 +76,7 @@ export default function FeedbackPage() {
       })
 
       if (response.ok) {
-        setSuccessMessage(`${activeForm === 'problem' ? 'Problem reported' : activeForm === 'beta' ? 'Beta request submitted' : 'Security report submitted'} successfully! Thank you.`)
+        setSuccessMessage(`Beta request submitted successfully! Thank you.`)
         setShowSuccess(true)
         setFormData({})
         setTimeout(() => {
@@ -184,54 +194,11 @@ export default function FeedbackPage() {
 
               {/* Form Title */}
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                {activeForm === 'problem' && 'Report a Problem'}
                 {activeForm === 'beta' && 'Request Beta Access'}
-                {activeForm === 'bounty' && 'Report Security Issue'}
               </h3>
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Problem Report Form */}
-                {activeForm === 'problem' && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Issue Type *
-                      </label>
-                      <select
-                        value={formData.issueType || ''}
-                        onChange={(e) => handleInputChange('issueType', e.target.value)}
-                        required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
-                      >
-                        <option value="">Select type...</option>
-                        <option value="bug">Bug</option>
-                        <option value="crash">App Crash</option>
-                        <option value="performance">Performance Issue</option>
-                        <option value="ui">UI/UX Issue</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Severity *
-                      </label>
-                      <select
-                        value={formData.severity || ''}
-                        onChange={(e) => handleInputChange('severity', e.target.value)}
-                        required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
-                      >
-                        <option value="">Select severity...</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                        <option value="critical">Critical</option>
-                      </select>
-                    </div>
-                  </>
-                )}
-
                 {/* Beta Access Form */}
                 {activeForm === 'beta' && (
                   <>
@@ -257,42 +224,6 @@ export default function FeedbackPage() {
                         value={formData.expectedDate || ''}
                         onChange={(e) => handleInputChange('expectedDate', e.target.value)}
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Bug Bounty Form */}
-                {activeForm === 'bounty' && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Vulnerability Type *
-                      </label>
-                      <select
-                        value={formData.vulnerabilityType || ''}
-                        onChange={(e) => handleInputChange('vulnerabilityType', e.target.value)}
-                        required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
-                      >
-                        <option value="">Select type...</option>
-                        <option value="xss">Cross-Site Scripting (XSS)</option>
-                        <option value="sql">SQL Injection</option>
-                        <option value="csrf">CSRF</option>
-                        <option value="auth">Authentication Issue</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Reward Expected
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.reward || ''}
-                        onChange={(e) => handleInputChange('reward', e.target.value)}
-                        placeholder="e.g., $100"
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
                       />
                     </div>
                   </>
@@ -331,13 +262,7 @@ export default function FeedbackPage() {
                 <motion.button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
-                    activeForm === 'problem'
-                      ? 'bg-gradient-to-r from-red-500 to-orange-500 hover:shadow-lg hover:shadow-red-500/50'
-                      : activeForm === 'beta'
-                      ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50'
-                      : 'bg-gradient-to-r from-green-500 to-teal-500 hover:shadow-lg hover:shadow-green-500/50'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 bg-gradient-to-r from-yellow-500 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 disabled:opacity-50 disabled:cursor-not-allowed`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

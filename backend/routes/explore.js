@@ -14,6 +14,57 @@ router.get('/districts', async (req, res) => {
   }
 })
 
+// GET /api/explore/featured-districts
+router.get('/featured-districts', async (req, res) => {
+  try {
+    const db = getDb()
+    const districts = await db
+      .collection('featured_districts')
+      .find({ isActive: { $ne: false } })
+      .sort({ order: 1 })
+      .toArray()
+    res.json({ ok: true, districts })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ ok: false, error: 'Failed to load featured districts' })
+  }
+})
+
+// PUT /api/explore/featured-districts
+router.put('/featured-districts', async (req, res) => {
+  try {
+    const { districts } = req.body || {}
+    if (!Array.isArray(districts)) {
+      return res.status(400).json({ ok: false, error: 'districts must be an array' })
+    }
+
+    const cleaned = districts
+      .map((d, idx) => {
+        const name = String(d?.name || d?.district || '').trim()
+        if (!name) return null
+        const image = String(d?.image || '').trim()
+        return {
+          name,
+          image,
+          order: typeof d?.order === 'number' ? d.order : idx,
+          isActive: d?.isActive !== false,
+        }
+      })
+      .filter(Boolean)
+
+    const db = getDb()
+    await db.collection('featured_districts').deleteMany({})
+    if (cleaned.length) {
+      await db.collection('featured_districts').insertMany(cleaned)
+    }
+
+    res.json({ ok: true, count: cleaned.length })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ ok: false, error: 'Failed to update featured districts' })
+  }
+})
+
 // GET /api/explore/:district
 router.get('/:district', async (req, res) => {
   try {

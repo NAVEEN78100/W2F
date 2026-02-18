@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import SplitText from "./SplitText"; // Make sure you have this component in your project
 
 export default function WWFSection() {
   return (
@@ -19,24 +18,60 @@ export default function WWFSection() {
           </div>
         </div>
 
-        {/* WWF Blur Text */}
+        {/* W 2 F Images */}
         <div className="mb-24 min-h-[40vh] flex items-center justify-center">
-          <SplitText
-  text="WWF"
-  className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-black text-orange-500 leading-none tracking-tighter"
-  delay={400}
-  duration={0.8}
-  ease="easeOut"
-  splitType="chars"
-  from={{ opacity: 0, y: 40 }}
-  to={{ opacity: 1, y: 0 }}
-  threshold={0.1}
-  rootMargin="-100px"
-  textAlign="center"
-  tag="h1"
-  onLetterAnimationComplete={() => console.log("WWF letters animation completed!")}
-/>
+          <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
+            {/* W Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 40 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+              viewport={{ once: false, amount: 0.5 }}
+              className="flex-shrink-0 flex items-center justify-center scale-105"
+            >
+              <img
+                src="/w.png"
+                alt="W"
+                width="140"
+                height="145"
+                className="w-20 sm:w-32 md:w-40 lg:w-48 h-20 sm:h-32 md:h-40 lg:h-48 object-contain"
+              />
+            </motion.div>
 
+            {/* 2 Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 40 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+              viewport={{ once: false, amount: 0.5 }}
+              className="flex-shrink-0 flex items-center justify-center"
+            >
+              <img
+                src="/2.png"
+                alt="2"
+                width="140"
+                height="140"
+                className="w-20 sm:w-32 md:w-40 lg:w-48 h-20 sm:h-32 md:h-40 lg:h-48 object-contain"
+              />
+            </motion.div>
+
+            {/* F Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 40 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+              viewport={{ once: false, amount: 0.5 }}
+              className="flex-shrink-0 flex items-center justify-center"
+            >
+              <img
+                src="/f.png"
+                alt="F"
+                width="140"
+                height="140"
+                className="w-20 sm:w-32 md:w-40 lg:w-48 h-20 sm:h-32 md:h-40 lg:h-48 object-contain"
+              />
+            </motion.div>
+          </div>
         </div>
 
         {/* WWF Event Cards */}

@@ -13,6 +13,7 @@ export default function ExplorePage() {
   const router = useRouter()
 
   const [districts, setDistricts] = useState<any[]>([])
+  const [featuredDistricts, setFeaturedDistricts] = useState<any[]>([])
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
   const [displayDistrict, setDisplayDistrict] = useState<string>('')
   const restaurantSectionRef = useRef<HTMLDivElement>(null)
@@ -28,6 +29,14 @@ export default function ExplorePage() {
     fetch(base + '/api/explore/districts')
       .then((r) => r.json())
       .then((data) => { if (data?.districts) setDistricts(data.districts) })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    fetch(base + '/api/explore/featured-districts')
+      .then((r) => r.json())
+      .then((data) => { if (data?.districts) setFeaturedDistricts(data.districts) })
       .catch(() => {})
   }, [])
 
@@ -80,6 +89,67 @@ export default function ExplorePage() {
     { name: 'Pizza', logo: '🍕' },
     { name: 'Burgers', logo: '🍔' }
   ];
+
+  const featuredList = featuredDistricts.length > 0
+    ? featuredDistricts
+    : districts.slice(0, 10)
+
+  const featuredIcons = [
+    <svg key="arch" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M8 52h48" />
+      <path d="M14 52V30l18-14 18 14v22" />
+      <path d="M24 52V36h16v16" />
+    </svg>,
+    <svg key="tower" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="24" y="10" width="16" height="42" rx="2" />
+      <path d="M20 52h24" />
+      <path d="M28 18h8M28 26h8M28 34h8" />
+    </svg>,
+    <svg key="gate" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M8 52h48" />
+      <path d="M14 52V28h36v24" />
+      <path d="M22 28V20h20v8" />
+      <path d="M28 52V36h8v16" />
+    </svg>,
+    <svg key="temple" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M8 28h48" />
+      <path d="M12 28l20-12 20 12" />
+      <path d="M16 52V28h32v24" />
+      <path d="M28 52V40h8v12" />
+    </svg>,
+    <svg key="bridge" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M6 50h52" />
+      <path d="M10 50V34a22 22 0 0 1 44 0v16" />
+      <path d="M18 50V36M46 50V36" />
+    </svg>,
+    <svg key="palace" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 52h40" />
+      <path d="M20 52V28h24v24" />
+      <path d="M24 28V18h16v10" />
+      <path d="M28 52V36h8v16" />
+    </svg>,
+    <svg key="dome" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 52h40" />
+      <path d="M16 52V34a16 16 0 0 1 32 0v18" />
+      <path d="M32 18V12" />
+    </svg>,
+    <svg key="fort" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M10 52h44" />
+      <path d="M14 52V24h36v28" />
+      <path d="M20 24V16h8v8M36 24V16h8v8" />
+    </svg>,
+    <svg key="monument" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M8 52h48" />
+      <path d="M22 52V20h20v32" />
+      <path d="M24 20l8-10 8 10" />
+    </svg>,
+    <svg key="city" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="8" y="30" width="16" height="22" rx="2" />
+      <rect x="26" y="22" width="16" height="30" rx="2" />
+      <rect x="44" y="34" width="12" height="18" rx="2" />
+      <path d="M14 52v-6M32 52v-8M50 52v-4" />
+    </svg>,
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#181a20] to-[#0f0f13]">
@@ -188,6 +258,96 @@ export default function ExplorePage() {
           .animate-scroll-rtl:hover,
           .animate-scroll-ltr:hover {
             animation-play-state: paused;
+          }
+        `}</style>
+      </div>
+
+      {/* Featured Districts */}
+      <div className="bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-[#2b2b2b] tracking-wide">Popular Districts</h2>
+            <button
+              className="text-sm font-semibold text-[#ff3b3b] hover:text-[#e22e2e] transition-colors"
+              onClick={() => {
+                const el = document.getElementById('district-selection')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              View All Districts
+            </button>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-6">
+            {featuredList.map((item, idx) => {
+              const name = item?.name || item?.district || String(item || '')
+              const image = item?.image || ''
+              const icon = featuredIcons[idx % featuredIcons.length]
+              return (
+                <button
+                  key={`${name}-${idx}`}
+                  onClick={() => {
+                    setSelectedDistrict(name)
+                    setTimeout(() => {
+                      if (restaurantSectionRef.current) {
+                        restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      }
+                    }, 300)
+                  }}
+                  className="featured-district-card group"
+                  style={{ animationDelay: `${idx * 60}ms` }}
+                >
+                  <span className="featured-district-icon">
+                    {image ? (
+                      <img src={image} alt={name} className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+                    ) : (
+                      icon
+                    )}
+                  </span>
+                  <span className="featured-district-text">{name}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <style jsx>{`
+          .featured-district-card {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 6px;
+            color: #525252;
+            border-radius: 12px;
+            transition: transform 0.25s ease, color 0.25s ease;
+            animation: featured-fade-up 0.5s ease both;
+          }
+          .featured-district-card:hover {
+            transform: translateY(-4px);
+            color: #ff3b3b;
+          }
+          .featured-district-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #60656d;
+          }
+          .featured-district-card:hover .featured-district-icon {
+            color: #ff3b3b;
+          }
+          .featured-district-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+          }
+          @keyframes featured-fade-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @media (max-width: 640px) {
+            .featured-district-card { width: 96px; }
+            .featured-district-text { font-size: 0.85rem; }
           }
         `}</style>
       </div>
@@ -330,7 +490,8 @@ export default function ExplorePage() {
         </div>
 
   {/* Only show restaurant/featured sections if a district is selected and data is loaded */}
-  {(selectedDistrict && displayDistrict && restaurants.length > 0) && (
+  {selectedDistrict && (
+          <>
           <div ref={restaurantSectionRef} className="space-y-16">
             {/* All Restaurants */}
             <section>
@@ -338,51 +499,57 @@ export default function ExplorePage() {
                 Restaurants in {displayDistrict || selectedDistrict}
                 {searchQuery && <span className="text-lg font-normal text-gray-400 ml-3">Search results for "{searchQuery}"</span>}
               </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredRestaurants.map((r: any, idx: number) => (
-                  <article key={r.id || r.name} className={`group relative rounded-2xl overflow-hidden transform hover:-translate-y-1 transition-all duration-300 fade-in`} style={{ animationDelay: `${idx * 80}ms` }}>
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#ffb300] to-[#ff7a1a] rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                    <div className="relative bg-[#23242a]/80 backdrop-blur-sm border border-[#ffb300]/20 rounded-2xl overflow-hidden hover:border-[#ffb300]/40">
-                      <div className="relative h-48">
-                        <img src={r.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3'} alt={r.name} className="absolute inset-0 w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <h3 className="text-lg font-bold text-white">{r.name}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="px-2 py-1 rounded-md bg-white/20 backdrop-blur-sm text-xs text-white">{r.cuisine}</span>
-                            {r.featured && <span className="px-2 py-1 rounded-md bg-[#ffb300] text-xs text-[#181a20] font-medium">Featured</span>}
+              {filteredRestaurants.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredRestaurants.map((r: any, idx: number) => (
+                    <article key={r.id || r.name} className={`group relative rounded-2xl overflow-hidden transform hover:-translate-y-1 transition-all duration-300 fade-in`} style={{ animationDelay: `${idx * 80}ms` }}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#ffb300] to-[#ff7a1a] rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                      <div className="relative bg-[#23242a]/80 backdrop-blur-sm border border-[#ffb300]/20 rounded-2xl overflow-hidden hover:border-[#ffb300]/40">
+                        <div className="relative h-48">
+                          <img src={r.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3'} alt={r.name} className="absolute inset-0 w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <h3 className="text-lg font-bold text-white">{r.name}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="px-2 py-1 rounded-md bg-white/20 backdrop-blur-sm text-xs text-white">{r.cuisine}</span>
+                              {r.featured && <span className="px-2 py-1 rounded-md bg-[#ffb300] text-xs text-[#181a20] font-medium">Featured</span>}
+                            </div>
+                          </div>
+                          {r.rating && (
+                            <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 rounded-md bg-white/90 text-[#181a20] text-sm font-medium">
+                              <Star className="w-4 h-4 text-[#ffb300] fill-current" />
+                              <span>{r.rating}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <div className="flex items-center justify-between text-sm text-gray-400">
+                            <div className="flex items-center gap-4">
+                              {r.deliveryTime && (
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  <span>{r.deliveryTime}</span>
+                                </div>
+                              )}
+                              {r.distance && (
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  <span>{r.distance}</span>
+                                </div>
+                              )}
+                            </div>
+                            {r.priceRange && <span className="text-[#ffb300]">{r.priceRange}</span>}
                           </div>
                         </div>
-                        {r.rating && (
-                          <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 rounded-md bg-white/90 text-[#181a20] text-sm font-medium">
-                            <Star className="w-4 h-4 text-[#ffb300] fill-current" />
-                            <span>{r.rating}</span>
-                          </div>
-                        )}
                       </div>
-                      <div className="p-4">
-                        <div className="flex items-center justify-between text-sm text-gray-400">
-                          <div className="flex items-center gap-4">
-                            {r.deliveryTime && (
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                <span>{r.deliveryTime}</span>
-                              </div>
-                            )}
-                            {r.distance && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>{r.distance}</span>
-                              </div>
-                            )}
-                          </div>
-                          {r.priceRange && <span className="text-[#ffb300]">{r.priceRange}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-[#ffb300]/20 bg-[#23242a]/70 p-6 text-gray-300">
+                  No restaurants available for {displayDistrict || selectedDistrict} yet.
+                </div>
+              )}
             </section>
 
             {/* Featured Ambience */}
@@ -452,6 +619,7 @@ export default function ExplorePage() {
               </section>
             )}
           </div>
+        </>
         )}
       </div>
     </div>

@@ -9,7 +9,8 @@ import Image from "next/image"
 import ScrollFloat from "@/components/ScrollFloat"
 import VariableProximity from "@/components/VariableProximity"
 import { useScroll } from "framer-motion"
-import SplitText from "@/components/SplitText" // Import SplitText component
+import gsap from "gsap"
+import SplitText from "@/components/SplitText"
 import TrueFocus from "@/components/TrueFocus"
 import {
   Play,
@@ -35,10 +36,20 @@ import {
 } from "lucide-react"
 import PhoneCardsAnimation from "@/components/PhoneCardsAnimation"
 import TestimonialsSection from "@/components/TestimonialsSection"
+import PhoneFrame from "@/components/PhoneFrame"
+import AnimationSelector from "@/components/AnimationSelector"
+import QRScanAnimation from "@/components/animations/QRScanAnimation"
+import BrowseRestaurantsAnimation from "@/components/animations/BrowseRestaurantsAnimation"
+import OffersAnimation from "@/components/animations/OffersAnimation"
+import SwipeCardsAnimation from "@/components/animations/SwipeCardsAnimation"
+import ComingSoonAnimation from "@/components/animations/ComingSoonAnimation"
 
 export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [activeAnimation, setActiveAnimation] = useState(1)
+  const [showRestart, setShowRestart] = useState(false)
+  const [expandedFooterItem, setExpandedFooterItem] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollYProgress = useScroll({
     target: containerRef,
@@ -158,12 +169,30 @@ export default function HomePage() {
     },
   ]
 
+  const animations = [
+    { id: 1, title: 'QR Scan & Rate', description: 'Scan QR codes at restaurants, view menus, and leave ratings with instant rewards', component: <QRScanAnimation />, duration: 17000 },
+    { id: 2, title: 'Browse & Filter', description: 'Discover top-rated places in Coimbatore with powerful filtering options', component: <BrowseRestaurantsAnimation />, duration: 8500 },
+    { id: 3, title: 'Exclusive Offers', description: 'View and share special offers from your favorite restaurants', component: <OffersAnimation />, duration: 9000 },
+    { id: 4, title: 'Swipe to Save', description: 'Swipe right to wishlist dishes, swipe left to skip', component: <SwipeCardsAnimation />, duration: 12000 },
+    { id: 5, title: 'Coming Soon', description: 'More exciting features on the way', component: <ComingSoonAnimation />, duration: 4000 },
+  ]
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % appFeatures.length)
     }, 4000)
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    const current = animations.find(a => a.id === activeAnimation)
+    if (!current) return
+    const timer = setTimeout(() => {
+      if (activeAnimation < animations.length) setActiveAnimation(prev => prev + 1)
+      else setShowRestart(true)
+    }, current.duration)
+    return () => clearTimeout(timer)
+  }, [activeAnimation])
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -193,13 +222,13 @@ export default function HomePage() {
       </motion.nav>
 
       <motion.div
-        className="fixed bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-50"
+        className="fixed bottom-4 sm:bottom-6 left-0 right-0 flex justify-center z-50"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-full px-3 sm:px-6 shadow-2xl border border-white/20 py-1">
-          <div className="flex items-center justify-center space-x-2 sm:space-x-6">
+          <div className="flex items-center space-x-2 sm:space-x-6">
             <Link
               href="/"
               className="flex flex-col items-center space-y-1 px-2 sm:px-4 py-2 rounded-full hover:bg-orange-100 transition-all duration-300 group"
@@ -219,16 +248,6 @@ export default function HomePage() {
                 Explore
               </span>
             </Link>
-
-              <Link
-                href="/demo"
-                className="flex flex-col items-center space-y-1 px-2 sm:px-4 py-2 rounded-full hover:bg-orange-100 transition-all duration-300 group"
-              >
-                <Play className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
-                <span className="text-xs font-medium text-gray-600 group-hover:text-orange-500 transition-colors hidden sm:block">
-                  Demo
-                </span>
-              </Link>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -289,22 +308,23 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-end min-h-screen pb-16 sm:pb-20">
-            {/* Left side - Main heading */}
-            <div className="space-y-6 sm:space-y-8 text-center lg:text-left" ref={containerRef}>
+          <div className="flex items-start justify-start min-h-screen pb-16 sm:pb-20 pt-60 sm:pt-72 md:pt-80 lg:pt-96">
+            {/* Left side - All content stacked */}
+            <div className="space-y-6 sm:space-y-8 w-full lg:max-w-2xl" ref={containerRef}>
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <VariableProximity
-                  label="Pocket friendly options in plenty"
+                  label="Pocket friendly
+options in plenty"
                   fromFontVariationSettings="'wght' 400, 'wdth' 100"
                   toFontVariationSettings="'wght' 900, 'wdth' 125"
                   containerRef={containerRef}
                   radius={150}
                   falloff="exponential"
-                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight block"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight block whitespace-pre-line"
                   style={{
                     fontFamily: "'Inter Variable', 'Inter', system-ui, sans-serif",
                     fontFeatureSettings: '"ss01" 1, "ss02" 1',
@@ -313,10 +333,7 @@ export default function HomePage() {
                   }}
                 />
               </motion.div>
-            </div>
 
-            {/* Right side - Subtext and buttons positioned at bottom */}
-            <div className="space-y-6 sm:space-y-8 flex flex-col justify-end text-center lg:text-left">
               <motion.p
                 className="text-lg sm:text-xl text-white/90 leading-relaxed"
                 initial={{ y: 30, opacity: 0 }}
@@ -327,7 +344,7 @@ export default function HomePage() {
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4"
+                className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1.0, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -374,7 +391,7 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="bg-white relative">
-        <div className="max-w-7xl mx-auto px-6 py-20">
+        <div className="max-w-7xl mx-auto px-6 py-4 sm:py-8 md:py-12">
           <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: 50 }}
@@ -388,34 +405,22 @@ export default function HomePage() {
               scrollEnd="center center"
               stagger={0.05}
               containerClassName="text-5xl md:text-6xl font-bold mb-6"
-              textClassName="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent"
+              textClassName="text-gray-800"
               style={{
-                filter: "drop-shadow(0 0 20px rgba(99, 102, 241, 0.4))",
-                textShadow: "0 0 30px rgba(99, 102, 241, 0.5)",
               }}
             >
               Unify your food experience
             </ScrollFloat>
             <motion.p
-              className="text-xl bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 bg-clip-text text-transparent max-w-2xl mx-auto font-semibold"
+              className="text-xl text-gray-600 max-w-2xl mx-auto font-semibold"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-              }}
               style={{
-                backgroundSize: "200% 200%",
-                filter: "drop-shadow(0 0 15px rgba(99, 102, 241, 0.3))",
               }}
               transition={{
                 duration: 0.8,
                 delay: 0.3,
                 ease: [0.25, 0.46, 0.45, 0.94],
-                backgroundPosition: {
-                  duration: 3,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
-                },
               }}
             >
               Everything you need for your culinary journey in one powerful app.
@@ -431,7 +436,7 @@ export default function HomePage() {
       </section>
 
       {/* Wander With Food Section */}
-      <section className="bg-gray-50 relative overflow-hidden h-full py-24 sm:py-32 md:py-48">
+      <section className="bg-white relative overflow-hidden h-full py-12 sm:py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center justify-center space-y-6 sm:space-y-8">
             {wonderWithFoodWords.map((word, index) => (
@@ -498,7 +503,7 @@ export default function HomePage() {
             {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-4xl opacity-5"
+                className="absolute text-6xl opacity-30"
                 style={{
                   left: `${10 + i * 12}%`,
                   top: `${20 + (i % 3) * 30}%`,
@@ -547,9 +552,8 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
             <div className="space-y-8">
-              {/* Heading */}
               <motion.h2
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight text-left"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -557,9 +561,8 @@ export default function HomePage() {
                 Pocket Friendly Options in Plenty
               </motion.h2>
 
-              {/* Description */}
               <motion.p
-                className="text-xl text-white/90 leading-relaxed text-left"
+                className="text-xl text-white/90 leading-relaxed"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -567,12 +570,24 @@ export default function HomePage() {
                 Elevate your dining experience in a single tap. Join thousands of food lovers today.
               </motion.p>
 
-              {/* App Store Buttons */}
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 items-start"
+                className="inline-block"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.0, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <Link href="/explore">
+                  <Button className="bg-black text-white hover:bg-gray-800 rounded-xl px-8 py-4 text-lg transition-all duration-300 ease-out hover:scale-105">
+                    Explore Restaurants
+                  </Button>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 pt-8"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.0, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <Link 
                   href="#" 
@@ -597,20 +612,6 @@ export default function HomePage() {
                     height={60}
                     className="h-[60px] w-[155px] object-contain"
                   />
-                </Link>
-              </motion.div>
-
-              {/* Explore Button */}
-              <motion.div
-                className="pt-4"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.0, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                <Link href="/explore">
-                  <Button className="bg-black text-white hover:bg-gray-800 rounded-xl px-8 py-4 text-lg transition-all duration-300 ease-out hover:scale-105">
-                    Explore Restaurants
-                  </Button>
                 </Link>
               </motion.div>
             </div>
@@ -660,6 +661,31 @@ export default function HomePage() {
       </section>
 
       {/* Additional Sections */}
+      {/* Demo Section */}
+      <section className="bg-gradient-to-br from-pink-500 via-orange-500 to-orange-400 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 relative overflow-hidden">
+        <div className="max-w-7xl w-full flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8 relative z-10">
+          <div className="flex-1 text-white max-w-lg flex flex-col justify-center">
+            <div className="mb-6">
+              <div className="w-1 h-12 sm:h-16 bg-yellow-400 mb-3"></div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 leading-tight">{animations.find(a => a.id === activeAnimation)?.title.toUpperCase()}</h1>
+              <p className="text-xs sm:text-sm md:text-base opacity-90 leading-relaxed">{animations.find(a => a.id === activeAnimation)?.description}</p>
+            </div>
+
+            <AnimationSelector animations={animations} activeAnimation={activeAnimation} onSelect={setActiveAnimation} />
+
+            {showRestart && (
+              <button onClick={() => { setShowRestart(false); setActiveAnimation(1) }} className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 px-4 sm:px-6 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg w-fit text-xs sm:text-sm">
+                RESTART DEMO
+              </button>
+            )}
+          </div>
+
+          <div className="flex-shrink-0 w-full sm:w-auto flex justify-center lg:justify-end">
+            <PhoneFrame>{animations.find(a => a.id === activeAnimation)?.component}</PhoneFrame>
+          </div>
+        </div>
+      </section>
+
       <TestimonialsSection />
 
       {/* Final Call-to-Action Section */}
@@ -671,11 +697,11 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="space-y-6 sm:space-y-8"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black text-red-500 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black leading-tight" style={{ color: "#FFD402" }}>
               1 million users,
               <span className="block">plus you.</span>
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl text-red-500 max-w-2xl mx-auto leading-relaxed font-medium px-4">
+            <p className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed font-medium px-4" style={{ color: "#FFD402" }}>
               It only takes few seconds to get started.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 sm:pt-8">
@@ -713,42 +739,124 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="mb-8 sm:mb-12">
             <div className="max-w-2xl mx-auto space-y-3 sm:space-y-4">
-              <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-medium text-sm sm:text-base">Smart Phone</span>
-                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
+              {/* Partner with us */}
+              <div className="border-2 border-orange-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-orange-50 to-yellow-50">
+                <div 
+                  className="p-4 sm:p-5 hover:bg-orange-100/50 transition-all cursor-pointer"
+                  onClick={() => setExpandedFooterItem(expandedFooterItem === 'partner' ? null : 'partner')}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                        <Building2 className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-orange-600 font-semibold text-base sm:text-lg">Partner with us</span>
+                    </div>
+                    <Plus className={`w-5 h-5 sm:w-6 sm:h-6 text-orange-500 transition-transform duration-300 ${expandedFooterItem === 'partner' ? 'rotate-45' : ''}`} />
+                  </div>
                 </div>
+                {expandedFooterItem === 'partner' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="px-4 sm:px-5 pb-5 bg-white/80 backdrop-blur-sm"
+                  >
+                    <div className="pt-4 border-t border-orange-200">
+                      <p className="text-gray-700 mb-5 text-sm sm:text-base leading-relaxed">
+                        Join our network of restaurant partners and reach thousands of food enthusiasts. Grow your business with WWF's powerful platform and increase your visibility in the local dining scene.
+                      </p>
+                      <Link href="http://localhost:3000/company/partners-react">
+                        <Button className="bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-bold w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                          Partner with us →
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
               </div>
-              <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-medium text-sm sm:text-base">Smart Watch</span>
-                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
+
+              {/* Report a problem */}
+              <div className="border-2 border-red-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-red-50 to-orange-50">
+                <div 
+                  className="p-4 sm:p-5 hover:bg-red-100/50 transition-all cursor-pointer"
+                  onClick={() => setExpandedFooterItem(expandedFooterItem === 'problem' ? null : 'problem')}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-red-600 font-semibold text-base sm:text-lg">Report a problem</span>
+                    </div>
+                    <Plus className={`w-5 h-5 sm:w-6 sm:h-6 text-red-500 transition-transform duration-300 ${expandedFooterItem === 'problem' ? 'rotate-45' : ''}`} />
+                  </div>
                 </div>
+                {expandedFooterItem === 'problem' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="px-4 sm:px-5 pb-5 bg-white/80 backdrop-blur-sm"
+                  >
+                    <div className="pt-4 border-t border-red-200">
+                      <p className="text-gray-700 mb-5 text-sm sm:text-base leading-relaxed">
+                        We're here to help! If you've encountered an issue or have concerns about our service, please share your feedback with us. Your input helps us improve the WWF experience for everyone.
+                      </p>
+                      <Link href="http://localhost:3000/feedback">
+                        <Button className="bg-gradient-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-bold w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                          Send Feedback →
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
               </div>
-              <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-medium">Tablet / Computer</span>
-                  <Plus className="w-5 h-5 text-orange-500" />
+
+              {/* Help Center */}
+              <div className="border-2 border-blue-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-blue-50 to-cyan-50">
+                <div 
+                  className="p-4 sm:p-5 hover:bg-blue-100/50 transition-all cursor-pointer"
+                  onClick={() => setExpandedFooterItem(expandedFooterItem === 'help' ? null : 'help')}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-blue-600 font-semibold text-base sm:text-lg">Help Center</span>
+                    </div>
+                    <Plus className={`w-5 h-5 sm:w-6 sm:h-6 text-blue-500 transition-transform duration-300 ${expandedFooterItem === 'help' ? 'rotate-45' : ''}`} />
+                  </div>
                 </div>
+                {expandedFooterItem === 'help' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="px-4 sm:px-5 pb-5 bg-white/80 backdrop-blur-sm"
+                  >
+                    <div className="pt-4 border-t border-blue-200">
+                      <p className="text-gray-700 mb-5 text-sm sm:text-base leading-relaxed">
+                        Find answers to frequently asked questions, learn how to use WWF features, and get support for any issues you may encounter. Our help center has everything you need.
+                      </p>
+                      <Link href="http://localhost:3000/support">
+                        <Button className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                          Visit Help Center →
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Main Footer Content */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
-            {/* Get Started Column */}
-            <div className="space-y-4">
-              <h3 className="text-orange-500 font-semibold text-lg">Get Started</h3>
-              <div className="space-y-3">
-                <Link href="/signup" className="block text-orange-500 hover:text-orange-600 transition-colors">
-                  Sign up
-                </Link>
-                <Link href="/login" className="block text-orange-500 hover:text-orange-600 transition-colors">
-                  Login
-                </Link>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
             {/* Discover Column */}
             <div className="space-y-4">
               <h3 className="text-orange-500 font-semibold text-lg">Discover</h3>
@@ -814,7 +922,7 @@ export default function HomePage() {
                   FAQ
                 </Link>
                 <Link href="/support" className="block text-orange-500 hover:text-orange-600 transition-colors">
-                  Support
+                  Help Center
                 </Link>
                 <Link href="/releases" className="block text-orange-500 hover:text-orange-600 transition-colors">
                   Release Notes
@@ -900,7 +1008,8 @@ export default function HomePage() {
         </div>
       </footer>
 
-      <section className="bg-gray-900 py-24 relative overflow-hidden min-h-screen flex items-center justify-center">
+      {/* WWF Section */}
+      <section className="bg-black py-20 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 text-center">
           {/* Language Selector and Made By */}
           <div className="flex justify-between items-center mb-16">
@@ -915,25 +1024,60 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* WWF Blur Text */}
+          {/* W 2 F Images */}
           <div className="mb-24 min-h-[40vh] flex items-center justify-center">
-            <SplitText
-              text="WWF"
-              className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-black text-orange-500 leading-none tracking-tighter"
-              delay={400}
-              duration={0.8}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.1}
-              rootMargin="-100px"
-              textAlign="center"
-              tag="h1"
-              onLetterAnimationComplete={() => {
-                console.log("WWF letters animation completed!")
-              }}
-            />
+            <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
+              {/* W Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 40 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                viewport={{ once: false, amount: 0.5 }}
+                className="flex-shrink-0 flex items-center justify-center scale-105"
+              >
+                <Image
+                  src="/w.png"
+                  alt="W"
+                  width={140}
+                  height={145}
+                  className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
+                />
+              </motion.div>
+
+              {/* 2 Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 40 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                viewport={{ once: false, amount: 0.5 }}
+                className="flex-shrink-0 flex items-center justify-center"
+              >
+                <Image
+                  src="/2.png"
+                  alt="2"
+                  width={140}
+                  height={140}
+                  className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
+                />
+              </motion.div>
+
+              {/* F Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 40 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                viewport={{ once: false, amount: 0.5 }}
+                className="flex-shrink-0 flex items-center justify-center"
+              >
+                <Image
+                  src="/f.png"
+                  alt="F"
+                  width={140}
+                  height={140}
+                  className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
+                />
+              </motion.div>
+            </div>
           </div>
 
           {/* WWF Event Cards */}

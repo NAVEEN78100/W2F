@@ -17,6 +17,9 @@ export default function DashboardPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [featuredDistricts, setFeaturedDistricts] = useState<Array<{ name: string; image?: string; order: number; isActive: boolean }>>([])
+  const [featuredDirty, setFeaturedDirty] = useState(false)
+  const [isSavingFeatured, setIsSavingFeatured] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editingRestaurant, setEditingRestaurant] = useState<Restaurant | null>(null)
 
@@ -35,6 +38,86 @@ export default function DashboardPage() {
     localStorage.removeItem('isAuthenticated')
   }
 
+  const loadFeaturedDistricts = async () => {
+    try {
+      const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+      const res = await fetch(base + '/api/explore/featured-districts')
+      const data = await res.json()
+      if (data?.districts) {
+        const normalized = data.districts.map((d: any, idx: number) => ({
+          name: String(d?.name || d?.district || '').trim(),
+          image: String(d?.image || '').trim(),
+          order: typeof d?.order === 'number' ? d.order : idx,
+          isActive: d?.isActive !== false,
+        }))
+        setFeaturedDistricts(normalized)
+        setFeaturedDirty(false)
+      }
+    } catch (error) {
+      console.error('Error loading featured districts:', error)
+    }
+  }
+
+  const saveFeaturedDistricts = async () => {
+    setIsSavingFeatured(true)
+    try {
+      const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+      const payload = featuredDistricts.map((d, idx) => ({
+        name: d.name.trim(),
+        image: (d.image || '').trim(),
+        order: idx,
+        isActive: d.isActive,
+      })).filter((d) => d.name)
+
+      const res = await fetch(base + '/api/explore/featured-districts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ districts: payload }),
+      })
+
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(errText || 'Failed to save featured districts')
+      }
+      setFeaturedDirty(false)
+    } catch (error) {
+      console.error('Error saving featured districts:', error)
+      alert('Error saving featured districts. Please try again.')
+    } finally {
+      setIsSavingFeatured(false)
+    }
+  }
+
+  const updateFeaturedAt = (index: number, patch: Partial<{ name: string; image?: string; isActive: boolean }>) => {
+    setFeaturedDistricts((prev) => {
+      const next = [...prev]
+      next[index] = { ...next[index], ...patch }
+      return next
+    })
+    setFeaturedDirty(true)
+  }
+
+  const addFeaturedDistrict = () => {
+    setFeaturedDistricts((prev) => ([...prev, { name: '', image: '', order: prev.length, isActive: true }]))
+    setFeaturedDirty(true)
+  }
+
+  const removeFeaturedDistrict = (index: number) => {
+    setFeaturedDistricts((prev) => prev.filter((_, i) => i !== index))
+    setFeaturedDirty(true)
+  }
+
+  const moveFeaturedDistrict = (from: number, to: number) => {
+    if (to < 0 || to >= featuredDistricts.length) return
+    setFeaturedDistricts((prev) => {
+      const next = [...prev]
+      const [item] = next.splice(from, 1)
+      next.splice(to, 0, item)
+      return next
+    })
+    setFeaturedDirty(true)
+  }
+
   // Fetch restaurants
   useEffect(() => {
     const auth = localStorage.getItem('isAuthenticated')
@@ -48,6 +131,8 @@ export default function DashboardPage() {
         .catch(error => {
           console.error('Error fetching restaurants:', error)
         })
+
+      loadFeaturedDistricts()
     }
   }, [isAuthenticated])
 
@@ -135,6 +220,90 @@ export default function DashboardPage() {
             Logout
           </Button>
         </div>
+
+        <Card className="mb-10 bg-[#23242a]/80 backdrop-blur-sm border-[#ffb300]/20">
+          <CardHeader>
+            <CardTitle className="text-white">Popular Districts</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-gray-400">
+              These districts appear in the "Popular Districts" strip on the Explore page.
+            </p>
+
+            <div className="space-y-3">
+              {featuredDistricts.map((item, idx) => (
+                <div key={`${item.name}-${idx}`} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto_auto] gap-3 items-center">
+                  <Input
+                    value={item.name}
+                    onChange={(e) => updateFeaturedAt(idx, { name: e.target.value })}
+                    placeholder="District name"
+                    className="bg-[#181a20]/50 border-[#ffb300]/20 text-white"
+                  />
+                  <Input
+                    value={item.image || ''}
+                    onChange={(e) => updateFeaturedAt(idx, { image: e.target.value })}
+                    placeholder="Image URL (optional)"
+                    className="bg-[#181a20]/50 border-[#ffb300]/20 text-white"
+                  />
+                  <label className="text-sm text-gray-300 flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={item.isActive}
+                      onChange={(e) => updateFeaturedAt(idx, { isActive: e.target.checked })}
+                    />
+                    Active
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-[#ffb300]/20 text-[#ffb300] hover:bg-[#ffb300]/10"
+                      onClick={() => moveFeaturedDistrict(idx, idx - 1)}
+                    >
+                      Up
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-[#ffb300]/20 text-[#ffb300] hover:bg-[#ffb300]/10"
+                      onClick={() => moveFeaturedDistrict(idx, idx + 1)}
+                    >
+                      Down
+                    </Button>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="border-red-500/20 text-red-500 hover:bg-red-500/10"
+                    onClick={() => removeFeaturedDistrict(idx)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="border-[#ffb300]/20 text-[#ffb300] hover:bg-[#ffb300]/10"
+                onClick={addFeaturedDistrict}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add District
+              </Button>
+              <Button
+                type="button"
+                className="bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] text-[#181a20] hover:shadow-lg hover:shadow-[#ffb300]/25"
+                onClick={saveFeaturedDistricts}
+                disabled={isSavingFeatured || !featuredDirty}
+              >
+                {isSavingFeatured ? 'Saving...' : 'Save Popular Districts'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.map(restaurant => (
