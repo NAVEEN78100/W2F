@@ -48,7 +48,6 @@ export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [activeAnimation, setActiveAnimation] = useState(1)
-  const [showRestart, setShowRestart] = useState(false)
   const [expandedFooterItem, setExpandedFooterItem] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollYProgress = useScroll({
@@ -188,8 +187,7 @@ export default function HomePage() {
     const current = animations.find(a => a.id === activeAnimation)
     if (!current) return
     const timer = setTimeout(() => {
-      if (activeAnimation < animations.length) setActiveAnimation(prev => prev + 1)
-      else setShowRestart(true)
+      setActiveAnimation(prev => (prev < animations.length ? prev + 1 : 1))
     }, current.duration)
     return () => clearTimeout(timer)
   }, [activeAnimation])
@@ -672,12 +670,6 @@ options in plenty"
             </div>
 
             <AnimationSelector animations={animations} activeAnimation={activeAnimation} onSelect={setActiveAnimation} />
-
-            {showRestart && (
-              <button onClick={() => { setShowRestart(false); setActiveAnimation(1) }} className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 px-4 sm:px-6 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg w-fit text-xs sm:text-sm">
-                RESTART DEMO
-              </button>
-            )}
           </div>
 
           <div className="flex-shrink-0 w-full sm:w-auto flex justify-center lg:justify-end">
@@ -1033,14 +1025,14 @@ options in plenty"
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
                 viewport={{ once: false, amount: 0.5 }}
-                className="flex-shrink-0 flex items-center justify-center scale-105"
+                className="flex-shrink-0 flex items-center justify-center scale-[1.2]"
               >
                 <Image
                   src="/w.png"
                   alt="W"
-                  width={140}
-                  height={145}
-                  className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
+                  width={170}
+                  height={175}
+                  className="!w-28 sm:!w-40 md:!w-48 lg:!w-56 !h-28 sm:!h-40 md:!h-48 lg:!h-56 object-contain"
                 />
               </motion.div>
 

@@ -3,11 +3,19 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "dev:web": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "seed": "node backend/seed.js",
-        "api": "node backend/server.js"
+        "api": "node backend/server.js",
+        "dev:api": "node backend/server.js",
+        "dev:help": "npm --prefix \"public/wwf-support page/wander-with-food-help-hub-main (1)/wander-with-food-help-hub-main\" run dev",
+        "dev:dashboard": "npm --prefix \"public/wwf-support page/content-hub-dashboard-main (1)/content-hub-dashboard-main\" run dev",
+        "dev:all": "concurrently -n API,WEB,HELP,DASH -c green,cyan,magenta,yellow \"npm run dev:api\" \"npm run dev:web\" \"npm run dev:help\" \"npm run dev:dashboard\"",
+        "stop:all": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/stop-all.ps1",
+        "restart:all": "npm run stop:all && npm run dev:all",
+        "setup:all": "npm install && npm --prefix \"public/wwf-support page/wander-with-food-help-hub-main (1)/wander-with-food-help-hub-main\" install && npm --prefix \"public/wwf-support page/content-hub-dashboard-main (1)/content-hub-dashboard-main\" install && npm run seed"
     },
     "dependencies": {
         "@gsap/react": "^2.1.2",
@@ -37,6 +45,7 @@
     "devDependencies": {
         "@types/node": "25.0.9",
         "@types/react": "19.2.8",
+        "concurrently": "^9.2.1",
         "tailwindcss": "^3.3.3",
         "typescript": "5.9.3"
     }

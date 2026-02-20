@@ -13,7 +13,52 @@ This project consists of **4 independent applications** that work together:
 
 ## 🚀 Quick Start
 
-### 1. Main Application & Backend
+### 1. One-Time Setup (all apps)
+
+```bash
+# Install dependencies for root + help hub + dashboard, then seed MongoDB
+npm run setup:all
+```
+
+### 2. Start Everything (single command)
+
+```bash
+# Starts API (4000), Next.js app (3000), Help Hub (5173), Dashboard (8080)
+npm run dev:all
+```
+
+**Main App URL**: http://localhost:3000  
+**Help Hub URL**: http://localhost:5173  
+**Dashboard URL**: http://localhost:8080
+
+### 3. Optional: Start Individual Services
+
+```bash
+npm run dev:api
+npm run dev:web
+npm run dev:help
+npm run dev:dashboard
+```
+
+### 4. Stop Everything
+
+```bash
+# Stops processes using ports 3000, 4000, 5173, 8080
+npm run stop:all
+```
+
+### 5. Restart Everything
+
+```bash
+# Stops all services and starts all services again
+npm run restart:all
+```
+
+### 6. Manual Start (Legacy / Per-Service Control)
+
+Use this mode when you want to run only specific services.
+
+#### Main Application & Backend
 
 ```bash
 # Install dependencies
@@ -29,9 +74,7 @@ npm run api
 npm run dev
 ```
 
-**Main App URL**: http://localhost:3000
-
-### 2. Help Hub (Support System)
+#### Help Hub (Support System)
 
 ```bash
 # Navigate to help hub directory
@@ -44,9 +87,7 @@ npm install
 npm run dev
 ```
 
-**Help Hub URL**: http://localhost:5173
-
-### 3. Content Hub Dashboard (Admin Panel)
+#### Content Hub Dashboard (Admin Panel)
 
 ```bash
 # Navigate to content hub directory
@@ -58,8 +99,6 @@ npm install
 # Start dashboard (port 8080)
 npm run dev
 ```
-
-**Dashboard URL**: http://localhost:8080
 
 ## 🎨 Tech Stack
 

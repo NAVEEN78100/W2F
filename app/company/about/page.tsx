@@ -497,14 +497,14 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
                 viewport={{ once: false, amount: 0.5 }}
-                className="flex-shrink-0 flex items-center justify-center scale-105"
+                className="flex-shrink-0 flex items-center justify-center scale-[1.2]"
               >
                 <Image
                   src="/w.png"
                   alt="W"
-                  width={140}
-                  height={145}
-                  className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
+                  width={170}
+                  height={175}
+                  className="!w-28 sm:!w-40 md:!w-48 lg:!w-56 !h-28 sm:!h-40 md:!h-48 lg:!h-56 object-contain"
                 />
               </motion.div>
 
