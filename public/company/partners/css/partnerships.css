@@ -25,13 +25,32 @@ body {
                 var(--bg);
 }
 
+html,
+body,
+.modal-content,
+.terms-drawer,
+.terms-drawer-body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar,
+.terms-drawer::-webkit-scrollbar,
+.terms-drawer-body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
 .container {
     width: min(1100px, calc(100% - 32px));
     margin-inline: auto;
 }
 
 .hero {
-    background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    background: rgb(253, 204, 8);
     color: #fff;
     padding: 64px 0 72px;
     position: relative;

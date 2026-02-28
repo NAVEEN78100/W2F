@@ -4,11 +4,76 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Partners</title>
+  <style>
+    @keyframes backHomeFloat {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-2px);
+      }
+    }
+
+    .back-home-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 248, 209, 0.92);
+      color: #5b4500;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(253, 204, 8, 0.75);
+      text-decoration: none;
+      font: 600 14px/1 Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(6px);
+      transition: transform 0.28s ease, box-shadow 0.28s ease, background-color 0.28s ease, color 0.28s ease;
+      animation: backHomeFloat 3s ease-in-out infinite;
+    }
+
+    .back-home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+      background: #fff5cc;
+      color: #3d2f00;
+    }
+
+    .back-home-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .back-home-btn .arrow {
+      transition: transform 0.28s ease;
+    }
+
+    .back-home-btn:hover .arrow {
+      transform: translateX(-2px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .back-home-btn {
+        background: rgba(34, 31, 19, 0.9);
+        color: #fde07a;
+        border-color: rgba(253, 204, 8, 0.45);
+      }
+
+      .back-home-btn:hover {
+        background: rgba(50, 44, 24, 0.95);
+        color: #ffe89d;
+      }
+    }
+  </style>
   <link rel="stylesheet" href="/company/partners/css/partnerships.css" />
   <link rel="stylesheet" href="/company/partners/css/sections.css" />
   <link rel="stylesheet" href="/company/partners/css/site.css" />
 </head>
 <body>
+  <a href="http://localhost:3000/" target="_top" rel="noopener noreferrer" class="back-home-btn"><span class="arrow" aria-hidden="true">←</span><span>back to home</span></a>
   <div class="min-h-screen">
     <section class="hero">
       <div class="hero-inner container">

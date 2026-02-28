@@ -36,7 +36,7 @@ export default function Blogs() {
     filter === "All" ? blogs : blogs.filter((b) => b.category === filter);
 
   return (
-    <div className="bg-[#FF3B2E] min-h-screen flex flex-col">
+    <div className="bg-[rgb(253,204,8)] min-h-screen flex flex-col">
       {/* Header */}
       <section className="h-[40vh] flex flex-col justify-end px-6 md:px-12 lg:px-16 mb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-white w-full gap-4">
@@ -451,7 +451,7 @@ export default function Blogs() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 40 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                transition={{ duration: 1.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 4 }}
                 viewport={{ once: false, amount: 0.5 }}
                 className="flex-shrink-0 flex items-center justify-center scale-105"
               >
@@ -466,7 +466,7 @@ export default function Blogs() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 40 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                transition={{ duration: 1.8, delay: 0.45, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 4 }}
                 viewport={{ once: false, amount: 0.5 }}
                 className="flex-shrink-0 flex items-center justify-center"
               >
@@ -481,7 +481,7 @@ export default function Blogs() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 40 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
+                transition={{ duration: 1.8, delay: 0.7, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 4 }}
                 viewport={{ once: false, amount: 0.5 }}
                 className="flex-shrink-0 flex items-center justify-center"
               >

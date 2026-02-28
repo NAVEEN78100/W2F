@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import ScrollFloatImages from '@/components/ScrollFloatImages'
 import { Button } from '@/components/ui/button'
 import { Building2, Shield, Users, Plus, Instagram, Twitter, Facebook, Youtube, Linkedin, Star, ChefHat } from 'lucide-react'
 
@@ -276,16 +277,18 @@ export default function PartnersFooter() {
           </div>
 
           {/* W 2 F Images */}
-          <div className="mb-24 min-h-[40vh] flex items-center justify-center">
+          <ScrollFloatImages
+            animationDuration={2.2}
+            ease="back.inOut(2)"
+            scrollStart="top bottom+=70%"
+            scrollEnd="bottom top+=10%"
+            stagger={0.1}
+            scrub={2.0}
+            containerClassName="mb-24 min-h-[40vh] flex items-center justify-center"
+          >
             <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
               {/* W Image */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 40 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
-                viewport={{ once: false, amount: 0.5 }}
-                className="flex-shrink-0 flex items-center justify-center scale-[1.2]"
-              >
+              <div className="scroll-float-image-item flex-shrink-0 flex items-center justify-center scale-[1.2]">
                 <Image
                   src="/w.png"
                   alt="W"
@@ -293,16 +296,10 @@ export default function PartnersFooter() {
                   height={175}
                   className="!w-28 sm:!w-40 md:!w-48 lg:!w-56 !h-28 sm:!h-40 md:!h-48 lg:!h-56 object-contain"
                 />
-              </motion.div>
+              </div>
 
               {/* 2 Image */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 40 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
-                viewport={{ once: false, amount: 0.5 }}
-                className="flex-shrink-0 flex items-center justify-center"
-              >
+              <div className="scroll-float-image-item flex-shrink-0 flex items-center justify-center">
                 <Image
                   src="/2.png"
                   alt="2"
@@ -310,16 +307,10 @@ export default function PartnersFooter() {
                   height={140}
                   className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
                 />
-              </motion.div>
+              </div>
 
               {/* F Image */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 40 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94], repeat: Infinity, repeatDelay: 2 }}
-                viewport={{ once: false, amount: 0.5 }}
-                className="flex-shrink-0 flex items-center justify-center"
-              >
+              <div className="scroll-float-image-item flex-shrink-0 flex items-center justify-center">
                 <Image
                   src="/f.png"
                   alt="F"
@@ -327,9 +318,9 @@ export default function PartnersFooter() {
                   height={140}
                   className="!w-20 sm:!w-32 md:!w-40 lg:!w-48 !h-20 sm:!h-32 md:!h-40 lg:!h-48 object-contain"
                 />
-              </motion.div>
+              </div>
             </div>
-          </div>
+          </ScrollFloatImages>
 
           {/* WWF Event Cards */}
           <div className="grid md:grid-cols-3 gap-8 mb-16">

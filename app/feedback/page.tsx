@@ -93,6 +93,15 @@ export default function FeedbackPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden">
+      <a
+        href="/"
+        className="fixed top-4 left-4 z-[70] group inline-flex items-center gap-2 rounded-full border border-yellow-400/70 bg-yellow-50/90 px-4 py-2 text-sm font-semibold text-yellow-900 shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-100 hover:shadow-xl active:translate-y-0 active:scale-[0.98] dark:border-yellow-300/50 dark:bg-zinc-900/85 dark:text-yellow-200 dark:hover:bg-zinc-800"
+      >
+        <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-0.5">
+          ←
+        </span>
+        <span>back to home</span>
+      </a>
       {/* Fixed Header with Logo */}
       <motion.div
         className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50"

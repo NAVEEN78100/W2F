@@ -12,6 +12,10 @@ const nextConfig = {
         source: '/company/blogs',
         destination: '/company/blogs/index.html',
       },
+      {
+        source: '/company/blogs/:path*',
+        destination: '/company/blogs/index.html',
+      },
     ]
   },
 }

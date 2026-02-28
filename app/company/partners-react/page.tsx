@@ -5,14 +5,19 @@ import PartnersFooter from './footer'
 export default function PartnersReactPage() {
   const publicDir = path.join(process.cwd(), 'public', 'company', 'partners-react')
   let htmlFiles: string[] = []
+  let entryFile = 'index.html'
   try {
     const all = fs.readdirSync(publicDir, { withFileTypes: true })
     htmlFiles = all.filter(d => d.isFile() && d.name.toLowerCase().endsWith('.html')).map(d => d.name)
+    if (htmlFiles.length > 0) {
+      const hasIndex = htmlFiles.find(name => name.toLowerCase() === 'index.html')
+      entryFile = hasIndex || htmlFiles[0]
+    }
   } catch (e) {}
 
   const partnersContent = htmlFiles.length > 0 ? (
     <div style={{ width: '100%', height: '100vh' }}>
-      <iframe title="Partners React" src={`/company/partners-react/${htmlFiles[0]}`} style={{ width: '100%', height: '100%', border: 'none' }} />
+      <iframe title="Partners React" src={`/company/partners-react/${entryFile}`} style={{ width: '100%', height: '100%', border: 'none' }} />
     </div>
   ) : (
     <div style={{ padding: 20 }}>

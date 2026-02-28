@@ -1,0 +1,7 @@
+.scroll-float-images {
+  overflow: hidden;
+}
+
+.scroll-float-image-item {
+  display: inline-flex;
+}

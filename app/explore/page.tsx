@@ -11,6 +11,7 @@ import ScrollVelocity from '@/components/ScrollVelocity'
 export default function ExplorePage() {
   const [ripple, setRipple] = useState<{x: number, y: number, key: string} | null>(null)
   const router = useRouter()
+  const hasAutoScrolledOnSearchRef = useRef(false)
 
   const [districts, setDistricts] = useState<any[]>([])
   const [featuredDistricts, setFeaturedDistricts] = useState<any[]>([])
@@ -23,6 +24,7 @@ export default function ExplorePage() {
   const [featuredDishes, setFeaturedDishes] = useState<any[]>([])
 
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [showDistrictGrid, setShowDistrictGrid] = useState<boolean>(false)
 
   useEffect(() => {
     const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
@@ -71,6 +73,36 @@ export default function ExplorePage() {
       ((r.cuisine || '') as string).toLowerCase().includes(q)
     )
   })
+
+  const filteredDistricts = districts.filter((d: any) => {
+    const q = searchQuery.trim().toLowerCase()
+    return q !== '' && (d?.name || '').toLowerCase().includes(q)
+  })
+
+  useEffect(() => {
+    const q = searchQuery.trim()
+
+    if (!q) {
+      hasAutoScrolledOnSearchRef.current = false
+      return
+    }
+
+    if (!selectedDistrict || hasAutoScrolledOnSearchRef.current || !restaurantSectionRef.current) {
+      return
+    }
+
+    const targetTop = Math.max(
+      0,
+      restaurantSectionRef.current.getBoundingClientRect().top + window.scrollY - 220,
+    )
+
+    window.scrollTo({
+      top: targetTop,
+      behavior: 'smooth',
+    })
+
+    hasAutoScrolledOnSearchRef.current = true
+  }, [searchQuery, selectedDistrict])
 
   const restaurantLogos = [
     { name: 'Indian', logo: '🍛' },
@@ -262,103 +294,13 @@ export default function ExplorePage() {
         `}</style>
       </div>
 
-      {/* Featured Districts */}
-      <div className="bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-10">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-[#2b2b2b] tracking-wide">Popular Districts</h2>
-            <button
-              className="text-sm font-semibold text-[#ff3b3b] hover:text-[#e22e2e] transition-colors"
-              onClick={() => {
-                const el = document.getElementById('district-selection')
-                if (el) el.scrollIntoView({ behavior: 'smooth' })
-              }}
-            >
-              View All Districts
-            </button>
-          </div>
-
-          <div className="mt-6 flex flex-wrap justify-center gap-6">
-            {featuredList.map((item, idx) => {
-              const name = item?.name || item?.district || String(item || '')
-              const image = item?.image || ''
-              const icon = featuredIcons[idx % featuredIcons.length]
-              return (
-                <button
-                  key={`${name}-${idx}`}
-                  onClick={() => {
-                    setSelectedDistrict(name)
-                    setTimeout(() => {
-                      if (restaurantSectionRef.current) {
-                        restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                      }
-                    }, 300)
-                  }}
-                  className="featured-district-card group"
-                  style={{ animationDelay: `${idx * 60}ms` }}
-                >
-                  <span className="featured-district-icon">
-                    {image ? (
-                      <img src={image} alt={name} className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                    ) : (
-                      icon
-                    )}
-                  </span>
-                  <span className="featured-district-text">{name}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <style jsx>{`
-          .featured-district-card {
-            width: 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 6px;
-            color: #525252;
-            border-radius: 12px;
-            transition: transform 0.25s ease, color 0.25s ease;
-            animation: featured-fade-up 0.5s ease both;
-          }
-          .featured-district-card:hover {
-            transform: translateY(-4px);
-            color: #ff3b3b;
-          }
-          .featured-district-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #60656d;
-          }
-          .featured-district-card:hover .featured-district-icon {
-            color: #ff3b3b;
-          }
-          .featured-district-text {
-            font-size: 0.95rem;
-            font-weight: 500;
-          }
-          @keyframes featured-fade-up {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          @media (max-width: 640px) {
-            .featured-district-card { width: 96px; }
-            .featured-district-text { font-size: 0.85rem; }
-          }
-        `}</style>
-      </div>
-
       {/* Search and District Selection Section */}
-      <div className="relative bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] py-12" id="district-selection">
+      <div className="relative bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] py-8 md:py-10" id="district-selection">
         <div className="absolute inset-0 bg-[url('/hero-pattern.svg')] bg-cover mix-blend-overlay opacity-20"></div>
         <div className="max-w-6xl mx-auto px-6">
           <div className="relative">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-[#181a20]">Discover Local Flavors</h2>
-            <p className="text-lg text-[#181a20]/90 mb-6 max-w-2xl">Choose your district and explore the best restaurants, amazing ambience, and must-try signature dishes.</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-3 text-[#181a20]">Discover Local Flavors</h2>
+            <p className="text-lg text-[#181a20]/90 mb-4 max-w-2xl">Choose your district and explore the best restaurants, amazing ambience, and must-try signature dishes.</p>
             <div className="flex gap-4 items-center">
               <div className="relative flex-1 max-w-lg">
                 <input
@@ -366,6 +308,21 @@ export default function ExplorePage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return
+                    const q = searchQuery.trim().toLowerCase()
+                    if (!q) return
+                    const matchedDistrict = districts.find((d: any) => (d?.name || '').toLowerCase().includes(q))
+                    if (matchedDistrict?.name) {
+                      setSelectedDistrict(matchedDistrict.name)
+                      setShowDistrictGrid(true)
+                      setTimeout(() => {
+                        if (restaurantSectionRef.current) {
+                          restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        }
+                      }, 300)
+                    }
+                  }}
                   placeholder="Search restaurants or cuisines..."
                   className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/95 border-2 border-[#181a20]/10 focus:border-[#181a20]/20 focus:ring-0 text-[#181a20] placeholder-[#181a20]/60"
                 />
@@ -380,6 +337,41 @@ export default function ExplorePage() {
                   Clear
                 </Button>
               )}
+            </div>
+
+            <div className="mt-6 popular-districts-highlight rounded-2xl px-4 py-4 md:px-5 md:py-5">
+              <h3 className="text-lg sm:text-xl font-semibold text-white tracking-wide">Popular Districts</h3>
+              <div className="mt-4 flex flex-wrap justify-center gap-4">
+                {featuredList.map((item, idx) => {
+                  const name = item?.name || item?.district || String(item || '')
+                  const image = item?.image || ''
+                  const icon = featuredIcons[idx % featuredIcons.length]
+                  return (
+                    <button
+                      key={`${name}-${idx}`}
+                      onClick={() => {
+                        setSelectedDistrict(name)
+                        setTimeout(() => {
+                          if (restaurantSectionRef.current) {
+                            restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                          }
+                        }, 300)
+                      }}
+                      className="featured-district-card group"
+                      style={{ animationDelay: `${idx * 60}ms` }}
+                    >
+                      <span className="featured-district-icon">
+                        {image ? (
+                          <img src={image} alt={name} className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+                        ) : (
+                          icon
+                        )}
+                      </span>
+                      <span className="featured-district-text">{name}</span>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -440,53 +432,185 @@ export default function ExplorePage() {
               transform: translateY(0) scale(1);
             }
           }
+          .featured-district-card {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 6px;
+            color: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            transition: transform 0.25s ease, color 0.25s ease;
+            animation: featured-fade-up 0.5s ease both;
+          }
+          .featured-district-card:hover {
+            transform: translateY(-4px);
+            color: #ffffff;
+          }
+          .featured-district-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.92);
+          }
+          .featured-district-card:hover .featured-district-icon {
+            color: #ffffff;
+          }
+          .featured-district-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+          }
+          .popular-districts-highlight {
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow:
+              inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+              0 8px 30px rgba(255, 255, 255, 0.12);
+            background: linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.14) 0%,
+              rgba(255, 255, 255, 0.04) 55%,
+              rgba(255, 255, 255, 0.08) 100%
+            );
+            backdrop-filter: blur(3px);
+            overflow: hidden;
+          }
+          .popular-districts-highlight::before {
+            content: '';
+            position: absolute;
+            top: -140%;
+            left: -40%;
+            width: 60%;
+            height: 320%;
+            background: linear-gradient(
+              110deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.05) 35%,
+              rgba(255, 255, 255, 0.5) 50%,
+              rgba(255, 255, 255, 0.07) 65%,
+              transparent 100%
+            );
+            transform: rotate(12deg);
+            animation: glossySweep 3.8s ease-in-out infinite;
+            pointer-events: none;
+          }
+          .popular-districts-highlight > * {
+            position: relative;
+            z-index: 1;
+          }
+          @keyframes featured-fade-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes glossySweep {
+            0% { left: -60%; opacity: 0; }
+            10% { opacity: 1; }
+            60% { left: 120%; opacity: 0.95; }
+            100% { left: 120%; opacity: 0; }
+          }
+          @media (max-width: 640px) {
+            .featured-district-card { width: 96px; }
+            .featured-district-text { font-size: 0.85rem; }
+          }
         `}</style>
         {/* District Selection */}
-        <div className="mb-10">
-          <div className="text-xl text-[#ffb300] font-semibold mb-4">Choose Your District</div>
-          <div className="w-full flex justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 w-full max-w-5xl mx-auto">
-              {districts.length === 0 ? (
-                <div className="col-span-full text-gray-400 flex items-center gap-2 justify-center">
-                  <svg className="animate-spin h-5 w-5 text-[#ffb300]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="#ffb300" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                  Loading districts...
+        <div className="mb-6">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="text-lg text-[#ffb300] font-semibold">Choose Your District</div>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 px-3 text-xs border-[#ffb300]/50 text-[#ffb300] hover:bg-[#ffb300]/10"
+              onClick={() => setShowDistrictGrid((prev) => !prev)}
+            >
+              {showDistrictGrid ? 'Hide District List' : 'Show District List'}
+            </Button>
+          </div>
+
+          {searchQuery.trim() !== '' && (
+            <div className="mb-3">
+              {filteredDistricts.length > 0 ? (
+                <div className="w-full flex justify-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full max-w-5xl mx-auto">
+                    {filteredDistricts.map((d: any) => (
+                      <button
+                        key={`search-${d.name}`}
+                        className={`district-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border border-[#ffb300]/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:ring-offset-2 focus:ring-offset-[#181a20] whitespace-normal break-words text-center relative overflow-hidden ${
+                          selectedDistrict && selectedDistrict.toLowerCase() === d.name.toLowerCase()
+                            ? 'selected bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] text-[#181a20]'
+                            : 'bg-[#23242a]/80 text-gray-300 hover:bg-[#ffb300]/20 hover:text-[#ffb300] hover:border-[#ffb300]'
+                        }`}
+                        style={{ minWidth: '128px', minHeight: '42px', letterSpacing: '0.4px', padding: '0.55rem 0.85rem' }}
+                        onClick={() => {
+                          setSelectedDistrict(d.name)
+                          setTimeout(() => {
+                            if (restaurantSectionRef.current) {
+                              restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }
+                          }, 300)
+                        }}
+                      >
+                        <span className="block w-full">{d.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ) : (
-                districts.map((d: any) => (
-                  <button
-                    key={d.name}
-                    className={`district-btn px-6 py-4 rounded-xl text-base font-semibold transition-all duration-500 border border-[#ffb300]/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:ring-offset-2 focus:ring-offset-[#181a20] whitespace-normal break-words text-center relative overflow-hidden ${
-                      selectedDistrict && selectedDistrict.toLowerCase() === d.name.toLowerCase()
-                        ? 'selected bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] text-[#181a20] scale-110'
-                        : 'bg-[#23242a]/80 text-gray-300 hover:bg-[#ffb300]/20 hover:text-[#ffb300] hover:border-[#ffb300] hover:scale-105'
-                    }`}
-                    style={{ minWidth: '140px', minHeight: '48px', letterSpacing: '0.5px', padding: '0.75rem 1rem', boxShadow: selectedDistrict && selectedDistrict.toLowerCase() === d.name.toLowerCase() ? '0 4px 24px 0 #ffb30055' : undefined }}
-                    onClick={e => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const x = e.clientX - rect.left;
-                      const y = e.clientY - rect.top;
-                      setRipple({x, y, key: d.name + Date.now()});
-                      setSelectedDistrict(d.name);
-                      setTimeout(() => {
-                        if (restaurantSectionRef.current) {
-                          restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                      }, 300);
-                    }}
-                  >
-                    <span className="block w-full">{d.name}</span>
-                    {ripple && ripple.key.startsWith(d.name) && (
-                      <span
-                        className="ripple"
-                        style={{ left: ripple.x, top: ripple.y, width: 40, height: 40 }}
-                        onAnimationEnd={() => setRipple(null)}
-                      />
-                    )}
-                  </button>
-                ))
+                <div className="text-sm text-gray-300">No district match for "{searchQuery}".</div>
               )}
             </div>
-          </div>
+          )}
+
+          {showDistrictGrid ? (
+            <div className="w-full flex justify-center">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full max-w-5xl mx-auto">
+                {districts.length === 0 ? (
+                  <div className="col-span-full text-gray-400 flex items-center gap-2 justify-center">
+                    <svg className="animate-spin h-5 w-5 text-[#ffb300]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="#ffb300" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    Loading districts...
+                  </div>
+                ) : (
+                  districts.map((d: any) => (
+                    <button
+                      key={d.name}
+                      className={`district-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-500 border border-[#ffb300]/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:ring-offset-2 focus:ring-offset-[#181a20] whitespace-normal break-words text-center relative overflow-hidden ${
+                        selectedDistrict && selectedDistrict.toLowerCase() === d.name.toLowerCase()
+                          ? 'selected bg-gradient-to-r from-[#ffb300] to-[#ff7a1a] text-[#181a20] scale-110'
+                          : 'bg-[#23242a]/80 text-gray-300 hover:bg-[#ffb300]/20 hover:text-[#ffb300] hover:border-[#ffb300] hover:scale-105'
+                      }`}
+                      style={{ minWidth: '128px', minHeight: '42px', letterSpacing: '0.4px', padding: '0.55rem 0.85rem', boxShadow: selectedDistrict && selectedDistrict.toLowerCase() === d.name.toLowerCase() ? '0 4px 24px 0 #ffb30055' : undefined }}
+                      onClick={e => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        setRipple({x, y, key: d.name + Date.now()});
+                        setSelectedDistrict(d.name);
+                        setTimeout(() => {
+                          if (restaurantSectionRef.current) {
+                            restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }, 300);
+                      }}
+                    >
+                      <span className="block w-full">{d.name}</span>
+                      {ripple && ripple.key.startsWith(d.name) && (
+                        <span
+                          className="ripple"
+                          style={{ left: ripple.x, top: ripple.y, width: 40, height: 40 }}
+                          onAnimationEnd={() => setRipple(null)}
+                        />
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-300">
+              Click "Show District List" to view all districts.
+            </div>
+          )}
         </div>
 
   {/* Only show restaurant/featured sections if a district is selected and data is loaded */}
