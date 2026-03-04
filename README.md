@@ -314,6 +314,21 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 # Admin Credentials (optional)
 ADMIN_USERNAME=naveen
 ADMIN_PASSWORD=name_sake
+
+# Partner OTP Email (Gmail SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_mail@gmail.com
+SMTP_PASS=your_gmail_app_password
+SMTP_FROM="Wander With Food <your_mail@gmail.com>"
+
+# Backward-compatible email keys
+EMAIL_USER=your_mail@gmail.com
+EMAIL_PASSWORD=your_gmail_app_password
+EMAIL_SERVICE=gmail
+
+# Admin notifications for partner requests
+ADMIN_NOTIFY_EMAIL=admin_mail@gmail.com
 ```
 
 ## 🚀 Deployment

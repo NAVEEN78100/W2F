@@ -43,9 +43,11 @@ router.put('/featured-districts', async (req, res) => {
         const name = String(d?.name || d?.district || '').trim()
         if (!name) return null
         const image = String(d?.image || '').trim()
+        const symbolKey = String(d?.symbolKey || d?.symbol || '').trim()
         return {
           name,
           image,
+          symbolKey,
           order: typeof d?.order === 'number' ? d.order : idx,
           isActive: d?.isActive !== false,
         }
@@ -62,6 +64,40 @@ router.put('/featured-districts', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ ok: false, error: 'Failed to update featured districts' })
+  }
+})
+
+// GET /api/explore/stats
+router.get('/stats', async (req, res) => {
+  try {
+    const db = getDb()
+
+    const [districtsCount, restaurantsCount, restaurantCuisines] = await Promise.all([
+      db.collection('districts').countDocuments({}),
+      db.collection('restaurants').countDocuments({}),
+      db.collection('restaurants').distinct('cuisine'),
+    ])
+
+    const cuisineSet = new Set()
+    ;(restaurantCuisines || []).forEach((cuisineValue) => {
+      String(cuisineValue || '')
+        .split(',')
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .forEach((part) => cuisineSet.add(part.toLowerCase()))
+    })
+
+    res.json({
+      ok: true,
+      stats: {
+        districts: districtsCount,
+        restaurants: restaurantsCount,
+        cuisines: cuisineSet.size,
+      },
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ ok: false, error: 'Failed to load stats' })
   }
 })
 

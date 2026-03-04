@@ -1,0 +1,32 @@
+[
+  {
+    "email": "naveennvaeen88075@gmail.com",
+    "otp": "302854",
+    "expires": 1772623867962,
+    "verified": false,
+    "createdAt": 1772623567962,
+    "details": {
+      "category": "3",
+      "name": "NAVEEN D",
+      "phone": "7810088075",
+      "location": "49,T.V.K NAGAR KAMARAJ ROAD",
+      "remarks": "W2F DEV",
+      "email": "naveennvaeen88075@gmail.com"
+    }
+  },
+  {
+    "email": "gowrik043@gmail.com",
+    "otp": "245914",
+    "expires": 1772624692947,
+    "verified": false,
+    "createdAt": 1772624392947,
+    "details": {
+      "category": "1",
+      "name": "goury krishna",
+      "phone": "7810088075",
+      "location": "gudalur",
+      "remarks": "TESTING W2F EMAILJS SMTP",
+      "email": "gowrik043@gmail.com"
+    }
+  }
+]

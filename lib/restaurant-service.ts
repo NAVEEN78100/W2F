@@ -2,9 +2,18 @@ import { Restaurant } from '@/types/restaurant'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
+async function parseApiResponse(response: Response) {
+  const raw = await response.text()
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return { ok: response.ok, error: raw || `Request failed with status ${response.status}` }
+  }
+}
+
 export async function fetchRestaurants(): Promise<Restaurant[]> {
   const response = await fetch(`${API_URL}/api/restaurants/all`)
-  const data = await response.json()
+  const data = await parseApiResponse(response)
   if (!data.ok) throw new Error(data.error)
   return data.restaurants
 }
@@ -18,7 +27,7 @@ export async function updateRestaurant(id: number, restaurant: Partial<Restauran
     },
     body: JSON.stringify(restaurant)
   })
-  const data = await response.json()
+  const data = await parseApiResponse(response)
   if (!data.ok) throw new Error(data.error)
 }
 
@@ -30,7 +39,7 @@ export async function deleteRestaurant(id: number): Promise<void> {
       'Authorization': `Bearer admin_authenticated`
     }
   })
-  const data = await response.json()
+  const data = await parseApiResponse(response)
   if (!data.ok) throw new Error(data.error)
 }
 
@@ -44,7 +53,7 @@ export async function addRestaurant(restaurant: Omit<Restaurant, 'id'>): Promise
     },
     body: JSON.stringify(restaurant)
   })
-  const data = await response.json()
+  const data = await parseApiResponse(response)
   if (!data.ok) throw new Error(data.error)
   return data.restaurant
 }

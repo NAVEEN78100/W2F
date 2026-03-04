@@ -5,7 +5,9 @@ const { connect } = require('./db')
 
 const app = express()
 app.use(cors())
-app.use(express.json())
+const BODY_LIMIT = process.env.BODY_LIMIT || '20mb'
+app.use(express.json({ limit: BODY_LIMIT }))
+app.use(express.urlencoded({ limit: BODY_LIMIT, extended: true }))
 
 const exploreRoutes = require('./routes/explore')
 const restaurantRoutes = require('./routes/restaurants')

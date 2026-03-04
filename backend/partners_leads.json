@@ -10,5 +10,29 @@
       "Remarks": "w2f dev",
       "AcceptTerms": "true"
     }
+  },
+  {
+    "receivedAt": "2026-03-04T11:18:57.095Z",
+    "data": {
+      "Category": "3",
+      "Email": "naveennvaeen88075@gmail.com",
+      "Name": "NAVEEN D",
+      "Phone": "7810088075",
+      "Location": "49,T.V.K NAGAR KAMARAJ ROAD",
+      "Remarks": "W2F _ DEVELOPER",
+      "AcceptTerms": "true"
+    }
+  },
+  {
+    "receivedAt": "2026-03-04T11:31:11.385Z",
+    "data": {
+      "Category": "2",
+      "Email": "naveennaveen88075@gmail.com",
+      "Name": "NAVEEN D",
+      "Phone": "7810088075",
+      "Location": "49,T.V.K NAGAR KAMARAJ ROAD",
+      "Remarks": "TESTING EMAIL",
+      "AcceptTerms": "true"
+    }
   }
 ]

@@ -48,6 +48,8 @@ export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [activeAnimation, setActiveAnimation] = useState(1)
+  const [elapsedMs, setElapsedMs] = useState(0)
+  const [runNonce, setRunNonce] = useState(0)
   const [expandedFooterItem, setExpandedFooterItem] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollYProgress = useScroll({
@@ -186,11 +188,26 @@ export default function HomePage() {
   useEffect(() => {
     const current = animations.find(a => a.id === activeAnimation)
     if (!current) return
+
+    setElapsedMs(0)
+    const start = Date.now()
+
+    const progressInterval = setInterval(() => {
+      setElapsedMs(Math.min(Date.now() - start, current.duration))
+    }, 50)
+
     const timer = setTimeout(() => {
       setActiveAnimation(prev => (prev < animations.length ? prev + 1 : 1))
     }, current.duration)
-    return () => clearTimeout(timer)
-  }, [activeAnimation])
+
+    return () => {
+      clearTimeout(timer)
+      clearInterval(progressInterval)
+    }
+  }, [activeAnimation, runNonce])
+
+  const currentDuration = animations.find((a) => a.id === activeAnimation)?.duration ?? 1
+  const animationProgress = Math.min(100, (elapsedMs / currentDuration) * 100)
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -669,7 +686,16 @@ options in plenty"
               <p className="text-xs sm:text-sm md:text-base opacity-90 leading-relaxed">{animations.find(a => a.id === activeAnimation)?.description}</p>
             </div>
 
-            <AnimationSelector animations={animations} activeAnimation={activeAnimation} onSelect={setActiveAnimation} />
+            <AnimationSelector
+              animations={animations}
+              activeAnimation={activeAnimation}
+              onSelect={(id) => {
+                setActiveAnimation(id)
+                setElapsedMs(0)
+                setRunNonce((prev) => prev + 1)
+              }}
+              progress={animationProgress}
+            />
           </div>
 
           <div className="flex-shrink-0 w-full sm:w-auto flex justify-center lg:justify-end">

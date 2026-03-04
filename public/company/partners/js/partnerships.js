@@ -17,7 +17,6 @@
     let lastFocused = null;
 
     // OTP variables
-    let generatedOtp = null;
     let otpTimer = null;
     let otpExpiryTime = null;
     let emailVerified = false;
@@ -70,9 +69,14 @@
             otpSection.style.display = "none";
             extraFields.style.display = "block";
             sendOtpBtn.disabled = false;
+            sendOtpBtn.style.display = "inline-block";
+            sendOtpBtn.textContent = "Send OTP";
             if (otpTimer) clearInterval(otpTimer);
             otpTimerDisplay.textContent = "";
             if (!emailVerified) leadEmail.readOnly = false;
+            otpInput.disabled = false;
+            verifyOtpBtn.disabled = false;
+            emailVerified = false;
         }
         if (lastFocused) lastFocused.focus();
     }
@@ -104,8 +108,7 @@
     }
 
     // Send OTP button clicked
-    // Send OTP button clicked
-    sendOtpBtn?.addEventListener("click", () => {
+    sendOtpBtn?.addEventListener("click", async () => {
         const requiredFields = [
             { el: qs("#leadName"), label: "Full Name" },
             { el: qs("#leadPhone"), label: "Contact Number" },
@@ -125,84 +128,126 @@
             leadMsg.className = "lead-msg error";
             return;
         }
+        if (!validateEmail(email)) {
+            leadMsg.textContent = "Please enter a valid email (example: name@gmail.com).";
+            leadMsg.className = "lead-msg error";
+            leadEmail.focus();
+            return;
+        }
+
+        const categoryValue = String(leadCategory?.value || '').trim();
+        const nameValue = String(qs("#leadName")?.value || '').trim();
+        const phoneValue = String(qs("#leadPhone")?.value || '').trim();
+        const locationValue = String(qs("#leadLocation")?.value || '').trim();
+        const remarksValue = String(qs("#leadRemarks")?.value || '').trim();
 
         // Disable button and show loading state
         sendOtpBtn.disabled = true;
         const originalText = sendOtpBtn.textContent;
         sendOtpBtn.innerHTML = '<span class="spinner"></span> Sending...';
 
-        if (typeof emailjs === "undefined" || typeof emailjs.send !== "function") {
-            leadMsg.textContent = "Email service is not available. Please try again later.";
+        try {
+            const response = await fetch('/api/partners/otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    action: 'send',
+                    email,
+                    category: categoryValue,
+                    name: nameValue,
+                    phone: phoneValue,
+                    location: locationValue,
+                    remarks: remarksValue,
+                }),
+            });
+
+            let data = {};
+            try { data = await response.json(); } catch { data = {}; }
+
+            if (!response.ok || !data.ok) {
+                throw new Error(data.error || 'Failed to send OTP.');
+            }
+
+            leadMsg.textContent = data.message || "OTP sent to your email.";
+            leadMsg.className = "lead-msg success";
+            otpSection.style.display = "block";
+            sendOtpBtn.style.display = "none";
+            otpInput.value = '';
+
+            otpExpiryTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+            if (otpTimer) clearInterval(otpTimer);
+
+            otpTimer = setInterval(() => {
+                const remaining = otpExpiryTime - Date.now();
+                if (remaining <= 0) {
+                    clearInterval(otpTimer);
+                    otpTimerDisplay.textContent = "⏳ OTP expired. Please resend.";
+                    sendOtpBtn.style.display = "inline-block";
+                    sendOtpBtn.disabled = false;
+                    sendOtpBtn.textContent = originalText;
+                    otpInput.disabled = true;
+                    verifyOtpBtn.disabled = true;
+                } else {
+                    const minutes = Math.floor(remaining / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    otpTimerDisplay.textContent = `⏱ Time left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                }
+            }, 1000);
+
+            otpInput.disabled = false;
+            verifyOtpBtn.disabled = false;
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = originalText;
+        } catch (err) {
+            const errorText = err?.message || "Failed to send OTP.";
+            console.error("Partner OTP send error:", err);
+            leadMsg.textContent = errorText;
             leadMsg.className = "lead-msg error";
             sendOtpBtn.disabled = false;
             sendOtpBtn.textContent = originalText;
-            return;
         }
-
-        generatedOtp = Math.floor(100000 + Math.random() * 900000);
-
-        const templateParams = {
-            email,
-            to_email: email,
-            user_email: email,
-            recipient: email,
-            otp: generatedOtp
-        };
-
-        emailjs.send("service_7yf1tan", "template_lphthdk", templateParams)
-            .then(() => {
-                leadMsg.textContent = "OTP sent to your email.";
-                leadMsg.className = "lead-msg success";
-                otpSection.style.display = "block";
-                sendOtpBtn.style.display = "none"; // Hide after successful send
-
-                otpExpiryTime = Date.now() + 2 * 60 * 1000; // 2 minutes
-                if (otpTimer) clearInterval(otpTimer);
-
-                otpTimer = setInterval(() => {
-                    const remaining = otpExpiryTime - Date.now();
-                    if (remaining <= 0) {
-                        clearInterval(otpTimer);
-                        otpTimerDisplay.textContent = "⏳ OTP expired. Please resend.";
-                        generatedOtp = null;
-                        sendOtpBtn.style.display = "inline-block";
-                        sendOtpBtn.disabled = false;
-                        sendOtpBtn.textContent = originalText;
-                        otpInput.disabled = true;
-                        verifyOtpBtn.disabled = true;
-                    } else {
-                        const minutes = Math.floor(remaining / 60000);
-                        const seconds = Math.floor((remaining % 60000) / 1000);
-                        otpTimerDisplay.textContent = `⏱ Time left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-                    }
-                }, 1000);
-
-                otpInput.disabled = false;
-                verifyOtpBtn.disabled = false;
-            }).catch(err => {
-                const errorText = err?.text || err?.message || "Failed to send OTP.";
-                console.error("EmailJS error:", err);
-                leadMsg.textContent = errorText;
-                leadMsg.className = "lead-msg error";
-                // Reset button state on error
-                sendOtpBtn.disabled = false;
-                sendOtpBtn.textContent = originalText;
-            });
     });
 
 
     // Verify OTP button clicked
-    verifyOtpBtn?.addEventListener("click", () => {
-        if (!generatedOtp || Date.now() > otpExpiryTime) {
+    verifyOtpBtn?.addEventListener("click", async () => {
+        if (Date.now() > otpExpiryTime) {
             leadMsg.textContent = "OTP expired. Please resend.";
             leadMsg.className = "lead-msg error";
             return;
         }
 
-        if (otpInput.value.trim() === String(generatedOtp)) {
-            leadMsg.textContent = "OTP verified!";
-            leadMsg.className = "lead-msg success";
+        const otp = otpInput.value.trim();
+        if (!otp) {
+            leadMsg.textContent = "Please enter OTP.";
+            leadMsg.className = "lead-msg error";
+            return;
+        }
 
+        verifyOtpBtn.disabled = true;
+        const verifyText = verifyOtpBtn.textContent;
+        verifyOtpBtn.textContent = 'Verifying...';
+
+        try {
+            const response = await fetch('/api/partners/otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    action: 'verify',
+                    email: leadEmail.value.trim(),
+                    otp,
+                }),
+            });
+
+            let data = {};
+            try { data = await response.json(); } catch { data = {}; }
+
+            if (!response.ok || !data.ok) {
+                throw new Error(data.error || 'Invalid OTP.');
+            }
+
+            leadMsg.textContent = data.message || "OTP verified!";
+            leadMsg.className = "lead-msg success";
             otpSection.style.display = "none";
 
             clearInterval(otpTimer);
@@ -213,11 +258,13 @@
 
             const submitBtn = qs("#submitBtn");
             if (submitBtn) submitBtn.disabled = false;
-
             qs("#leadName")?.focus();
-        } else {
-            leadMsg.textContent = "Invalid OTP.";
+        } catch (err) {
+            leadMsg.textContent = err?.message || "Invalid OTP.";
             leadMsg.className = "lead-msg error";
+        } finally {
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.textContent = verifyText;
         }
     });
 
@@ -252,6 +299,12 @@
         if (!emailVerified || extraFields.style.display === "none") {
             leadMsg.textContent = "Please verify OTP before submitting.";
             leadMsg.className = "lead-msg error";
+            return;
+        }
+        if (!validateEmail(String(leadEmail?.value || '').trim())) {
+            leadMsg.textContent = "Please enter a valid email before submitting.";
+            leadMsg.className = "lead-msg error";
+            leadEmail?.focus();
             return;
         }
         const acceptTermsChk = qs('#acceptTerms');

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { MapPin, Clock, ChevronLeft, Star } from 'lucide-react'
+import { MapPin, Clock, ChevronLeft, Star, Shield } from 'lucide-react'
 import ScrollVelocity from '@/components/ScrollVelocity'
 
 export default function ExplorePage() {
@@ -20,6 +20,8 @@ export default function ExplorePage() {
   const restaurantSectionRef = useRef<HTMLDivElement>(null)
 
   const [restaurants, setRestaurants] = useState<any[]>([])
+  const [allRestaurants, setAllRestaurants] = useState<any[]>([])
+  const [stats, setStats] = useState<{ districts: number; restaurants: number; cuisines: number } | null>(null)
   const [featuredAmbience, setFeaturedAmbience] = useState<any[]>([])
   const [featuredDishes, setFeaturedDishes] = useState<any[]>([])
 
@@ -36,9 +38,29 @@ export default function ExplorePage() {
 
   useEffect(() => {
     const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
-    fetch(base + '/api/explore/featured-districts')
+    fetch(base + '/api/explore/stats', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && data?.stats) {
+          setStats(data.stats)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    fetch(base + '/api/explore/featured-districts', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => { if (data?.districts) setFeaturedDistricts(data.districts) })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    fetch(base + '/api/restaurants/all')
+      .then((r) => r.json())
+      .then((data) => { if (data?.restaurants) setAllRestaurants(data.restaurants) })
       .catch(() => {})
   }, [])
 
@@ -74,10 +96,51 @@ export default function ExplorePage() {
     )
   })
 
-  const filteredDistricts = districts.filter((d: any) => {
+  const combinedDistricts = (() => {
+    const merged = new Map<string, any>()
+
+    districts.forEach((district: any) => {
+      const name = String(district?.name || district?.district || '').trim()
+      if (!name) return
+      merged.set(name.toLowerCase(), { ...district, name })
+    })
+
+    featuredDistricts.forEach((district: any) => {
+      const name = String(district?.name || district?.district || '').trim()
+      if (!name) return
+      const key = name.toLowerCase()
+      if (!merged.has(key)) {
+        merged.set(key, { ...district, name })
+      }
+    })
+
+    allRestaurants.forEach((restaurant: any) => {
+      const name = String(restaurant?.district || '').trim()
+      if (!name) return
+      const key = name.toLowerCase()
+      if (!merged.has(key)) {
+        merged.set(key, { name })
+      }
+    })
+
+    return Array.from(merged.values())
+  })()
+
+  const filteredDistricts = combinedDistricts.filter((d: any) => {
     const q = searchQuery.trim().toLowerCase()
     return q !== '' && (d?.name || '').toLowerCase().includes(q)
   })
+
+  const filteredRestaurantSuggestions = allRestaurants
+    .filter((restaurant: any) => {
+      const q = searchQuery.trim().toLowerCase()
+      if (!q) return false
+      return (
+        (restaurant?.name || '').toLowerCase().includes(q) ||
+        (restaurant?.cuisine || '').toLowerCase().includes(q)
+      )
+    })
+    .slice(0, 8)
 
   useEffect(() => {
     const q = searchQuery.trim()
@@ -122,66 +185,67 @@ export default function ExplorePage() {
     { name: 'Burgers', logo: '🍔' }
   ];
 
-  const featuredList = featuredDistricts.length > 0
-    ? featuredDistricts
-    : districts.slice(0, 10)
+  const featuredList = (() => {
+    const MAX_POPULAR_DISTRICTS = 12
+    const normalizeName = (district: any) => String(district?.name || district?.district || '').trim()
 
-  const featuredIcons = [
-    <svg key="arch" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M8 52h48" />
-      <path d="M14 52V30l18-14 18 14v22" />
-      <path d="M24 52V36h16v16" />
-    </svg>,
-    <svg key="tower" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="24" y="10" width="16" height="42" rx="2" />
-      <path d="M20 52h24" />
-      <path d="M28 18h8M28 26h8M28 34h8" />
-    </svg>,
-    <svg key="gate" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M8 52h48" />
-      <path d="M14 52V28h36v24" />
-      <path d="M22 28V20h20v8" />
-      <path d="M28 52V36h8v16" />
-    </svg>,
-    <svg key="temple" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M8 28h48" />
-      <path d="M12 28l20-12 20 12" />
-      <path d="M16 52V28h32v24" />
-      <path d="M28 52V40h8v12" />
-    </svg>,
-    <svg key="bridge" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M6 50h52" />
-      <path d="M10 50V34a22 22 0 0 1 44 0v16" />
-      <path d="M18 50V36M46 50V36" />
-    </svg>,
-    <svg key="palace" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 52h40" />
-      <path d="M20 52V28h24v24" />
-      <path d="M24 28V18h16v10" />
-      <path d="M28 52V36h8v16" />
-    </svg>,
-    <svg key="dome" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 52h40" />
-      <path d="M16 52V34a16 16 0 0 1 32 0v18" />
-      <path d="M32 18V12" />
-    </svg>,
-    <svg key="fort" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M10 52h44" />
-      <path d="M14 52V24h36v28" />
-      <path d="M20 24V16h8v8M36 24V16h8v8" />
-    </svg>,
-    <svg key="monument" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M8 52h48" />
-      <path d="M22 52V20h20v32" />
-      <path d="M24 20l8-10 8 10" />
-    </svg>,
-    <svg key="city" viewBox="0 0 64 64" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="8" y="30" width="16" height="22" rx="2" />
-      <rect x="26" y="22" width="16" height="30" rx="2" />
-      <rect x="44" y="34" width="12" height="18" rx="2" />
-      <path d="M14 52v-6M32 52v-8M50 52v-4" />
-    </svg>,
+    const featuredOnly = [...featuredDistricts]
+      .filter((district: any) => normalizeName(district))
+      .sort((a: any, b: any) => (Number(a?.order) || 0) - (Number(b?.order) || 0))
+
+    if (featuredOnly.length >= 10) {
+      return featuredOnly.slice(0, MAX_POPULAR_DISTRICTS)
+    }
+
+    const merged = new Map<string, any>()
+
+    featuredOnly.forEach((district: any) => {
+      const name = normalizeName(district)
+      merged.set(name.toLowerCase(), district)
+    })
+
+    combinedDistricts.forEach((district: any) => {
+      const name = normalizeName(district)
+      if (!name) return
+      const key = name.toLowerCase()
+      if (merged.has(key)) return
+      merged.set(key, district)
+    })
+
+    return Array.from(merged.values()).slice(0, MAX_POPULAR_DISTRICTS)
+  })()
+
+  const districtSymbolVariants: Array<{ key: string; path: string }> = [
+    { key: 'gateway', path: `<path d="M20 62h88"/><path d="M28 62V34h72v28"/><path d="M40 34V24h48v10"/><path d="M52 62V45h24v17"/><path d="M36 42h8M84 42h8"/>` },
+    { key: 'beach', path: `<path d="M16 62h96"/><path d="M24 62c8-8 24-8 32 0 8-8 24-8 32 0"/><path d="M44 48c0-8 6-14 14-14"/><path d="M58 34l10 10"/><path d="M28 52h72"/>` },
+    { key: 'arch', path: `<path d="M20 62h88"/><path d="M28 62V36h72v26"/><path d="M46 62V46a18 18 0 0 1 36 0v16"/><path d="M32 42h8M88 42h8"/>` },
+    { key: 'palace', path: `<path d="M20 62h88"/><path d="M28 62V38h72v24"/><path d="M40 38l12-10 12 10 12-10 12 10"/><path d="M56 62V48h16v14"/>` },
+    { key: 'minar', path: `<path d="M20 62h88"/><path d="M34 62V28h20v34"/><path d="M74 62V24h20v38"/><path d="M34 36h20M74 34h20"/>` },
+    { key: 'tower', path: `<path d="M20 62h88"/><path d="M40 62V30h16v32"/><path d="M72 62V26h16v36"/><path d="M36 30h24M68 26h24"/>` },
+    { key: 'temple', path: `<path d="M20 62h88"/><path d="M32 62V40h64v22"/><path d="M28 40l36-16 36 16"/><path d="M56 62V48h16v14"/>` },
+    { key: 'fort', path: `<path d="M20 62h88"/><path d="M28 62V34h72v28"/><path d="M28 34V26h10v8M90 34V26h10v8"/><path d="M54 62V46h20v16"/>` },
+    { key: 'dome', path: `<path d="M20 62h88"/><path d="M28 62V46a36 36 0 0 1 72 0v16"/><path d="M64 24v-6"/><path d="M54 62V48h20v14"/>` },
+    { key: 'city', path: `<path d="M20 62h88"/><rect x="24" y="36" width="20" height="26"/><rect x="52" y="30" width="24" height="32"/><rect x="84" y="40" width="20" height="22"/>` },
   ]
+
+  const getDefaultDistrictSymbolKey = (name: string) => {
+    const normalized = (name || '').trim()
+    const hash = Array.from(normalized).reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+    return districtSymbolVariants[hash % districtSymbolVariants.length]?.key || districtSymbolVariants[0].key
+  }
+
+  const getDistrictSymbolImage = (name: string, symbolKey?: string) => {
+    const resolvedKey = symbolKey || getDefaultDistrictSymbolKey(name)
+    const symbol = districtSymbolVariants.find((variant) => variant.key === resolvedKey)?.path || districtSymbolVariants[0].path
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="128" height="96" viewBox="0 0 128 96">
+        <g fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          ${symbol}
+        </g>
+      </svg>
+    `
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#181a20] to-[#0f0f13]">
@@ -212,7 +276,15 @@ export default function ExplorePage() {
                 Discover authentic local restaurants paired with strong curation and delightful experiences.
                 Manage your food journey confidently and securely.
               </p>
-              {/* Removed Explore Now button as requested */}
+              <div className="mt-6 md:flex md:justify-end">
+                <Button
+                  onClick={() => router.push('/dashboard')}
+                  className="group w-full md:w-auto rounded-full border border-white/35 bg-white/10 px-6 py-5 text-white backdrop-blur-md hover:bg-white/20"
+                >
+                  <Shield className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                  <span className="font-semibold">Admin Dashboard</span>
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -220,15 +292,15 @@ export default function ExplorePage() {
           <div className="mt-10 mx-auto max-w-3xl rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-xl p-8">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
               <div>
-                <div className="text-5xl font-bold text-white">{districts.length || 26}<span className="text-white/70">+</span></div>
+                <div className="text-5xl font-bold text-white">{(stats?.districts ?? combinedDistricts.length) || 0}<span className="text-white/70">+</span></div>
                 <div className="mt-3 inline-block px-4 py-1 rounded-full text-xs font-semibold bg-sky-300/30 text-white border border-white/30">Districts</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-white">150<span className="text-white/70">+</span></div>
+                <div className="text-5xl font-bold text-white">{(stats?.restaurants ?? allRestaurants.length) || 0}<span className="text-white/70">+</span></div>
                 <div className="mt-3 inline-block px-4 py-1 rounded-full text-xs font-semibold bg-sky-300/30 text-white border border-white/30">Restaurants</div>
               </div>
               <div>
-                <div className="text-5xl font-bold text-white">80<span className="text-white/70">+</span></div>
+                <div className="text-5xl font-bold text-white">{stats?.cuisines ?? 0}<span className="text-white/70">+</span></div>
                 <div className="mt-3 inline-block px-4 py-1 rounded-full text-xs font-semibold bg-sky-300/30 text-white border border-white/30">Cuisines</div>
               </div>
             </div>
@@ -312,10 +384,29 @@ export default function ExplorePage() {
                     if (e.key !== 'Enter') return
                     const q = searchQuery.trim().toLowerCase()
                     if (!q) return
-                    const matchedDistrict = districts.find((d: any) => (d?.name || '').toLowerCase().includes(q))
+                    const matchedDistrict = combinedDistricts.find((d: any) => (d?.name || '').toLowerCase().includes(q))
                     if (matchedDistrict?.name) {
                       setSelectedDistrict(matchedDistrict.name)
                       setShowDistrictGrid(true)
+                      setTimeout(() => {
+                        if (restaurantSectionRef.current) {
+                          restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        }
+                      }, 300)
+                      return
+                    }
+
+                    const matchedRestaurant = allRestaurants.find((restaurant: any) => {
+                      return (
+                        (restaurant?.name || '').toLowerCase().includes(q) ||
+                        (restaurant?.cuisine || '').toLowerCase().includes(q)
+                      )
+                    })
+
+                    if (matchedRestaurant?.district) {
+                      setSelectedDistrict(String(matchedRestaurant.district))
+                      setShowDistrictGrid(true)
+                      setSearchQuery(String(matchedRestaurant.name || q))
                       setTimeout(() => {
                         if (restaurantSectionRef.current) {
                           restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -339,13 +430,77 @@ export default function ExplorePage() {
               )}
             </div>
 
+            {searchQuery.trim() !== '' && (
+              <div className="mt-3 max-w-3xl rounded-xl border border-[#181a20]/15 bg-white/95 p-3 text-[#181a20] shadow-xl">
+                <div className="text-xs font-semibold uppercase tracking-wide text-[#181a20]/60">Search Suggestions</div>
+                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                  <div>
+                    <div className="text-[11px] font-semibold text-[#181a20]/55 mb-1">Districts</div>
+                    {filteredDistricts.length > 0 ? (
+                      <div className="space-y-1">
+                        {filteredDistricts.slice(0, 6).map((district: any) => (
+                          <button
+                            key={`suggest-district-${district.name}`}
+                            className="w-full text-left rounded-md px-2 py-1.5 text-sm hover:bg-[#181a20]/10"
+                            onClick={() => {
+                              setSelectedDistrict(district.name)
+                              setShowDistrictGrid(true)
+                              setTimeout(() => {
+                                if (restaurantSectionRef.current) {
+                                  restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                }
+                              }, 300)
+                            }}
+                          >
+                            {district.name}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-[#181a20]/55">No district match</div>
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-semibold text-[#181a20]/55 mb-1">Restaurants</div>
+                    {filteredRestaurantSuggestions.length > 0 ? (
+                      <div className="space-y-1">
+                        {filteredRestaurantSuggestions.map((restaurant: any) => (
+                          <button
+                            key={`suggest-restaurant-${restaurant.id || restaurant.name}`}
+                            className="w-full text-left rounded-md px-2 py-1.5 text-sm hover:bg-[#181a20]/10"
+                            onClick={() => {
+                              if (restaurant?.district) {
+                                setSelectedDistrict(String(restaurant.district))
+                              }
+                              setSearchQuery(String(restaurant?.name || ''))
+                              setShowDistrictGrid(true)
+                              setTimeout(() => {
+                                if (restaurantSectionRef.current) {
+                                  restaurantSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                }
+                              }, 300)
+                            }}
+                          >
+                            <span className="font-medium">{restaurant.name}</span>
+                            {restaurant?.district ? <span className="text-xs text-[#181a20]/55"> • {restaurant.district}</span> : null}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-[#181a20]/55">No restaurant match</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mt-6 popular-districts-highlight rounded-2xl px-4 py-4 md:px-5 md:py-5">
               <h3 className="text-lg sm:text-xl font-semibold text-white tracking-wide">Popular Districts</h3>
               <div className="mt-4 flex flex-wrap justify-center gap-4">
                 {featuredList.map((item, idx) => {
                   const name = item?.name || item?.district || String(item || '')
-                  const image = item?.image || ''
-                  const icon = featuredIcons[idx % featuredIcons.length]
+                  const symbolKey = item?.symbolKey || item?.symbol || getDefaultDistrictSymbolKey(name)
+                  const image = getDistrictSymbolImage(name, symbolKey)
                   return (
                     <button
                       key={`${name}-${idx}`}
@@ -361,11 +516,7 @@ export default function ExplorePage() {
                       style={{ animationDelay: `${idx * 60}ms` }}
                     >
                       <span className="featured-district-icon">
-                        {image ? (
-                          <img src={image} alt={name} className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                        ) : (
-                          icon
-                        )}
+                        <img src={image} alt={name} className="w-12 h-10 sm:w-14 sm:h-12 object-contain" />
                       </span>
                       <span className="featured-district-text">{name}</span>
                     </button>
@@ -443,6 +594,7 @@ export default function ExplorePage() {
             border-radius: 12px;
             transition: transform 0.25s ease, color 0.25s ease;
             animation: featured-fade-up 0.5s ease both;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.28), 0 6px 16px rgba(255,255,255,0.22);
           }
           .featured-district-card:hover {
             transform: translateY(-4px);
@@ -452,14 +604,17 @@ export default function ExplorePage() {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.92);
+            color: rgba(255, 255, 255, 0.98);
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.35));
           }
           .featured-district-card:hover .featured-district-icon {
             color: #ffffff;
+            filter: drop-shadow(0 0 12px rgba(255,255,255,0.45));
           }
           .featured-district-text {
             font-size: 0.95rem;
             font-weight: 600;
+            color: rgba(255, 255, 255, 0.98);
           }
           .popular-districts-highlight {
             position: relative;
@@ -565,13 +720,13 @@ export default function ExplorePage() {
           {showDistrictGrid ? (
             <div className="w-full flex justify-center">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full max-w-5xl mx-auto">
-                {districts.length === 0 ? (
+                {combinedDistricts.length === 0 ? (
                   <div className="col-span-full text-gray-400 flex items-center gap-2 justify-center">
                     <svg className="animate-spin h-5 w-5 text-[#ffb300]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="#ffb300" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
                     Loading districts...
                   </div>
                 ) : (
-                  districts.map((d: any) => (
+                  combinedDistricts.map((d: any) => (
                     <button
                       key={d.name}
                       className={`district-btn px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-500 border border-[#ffb300]/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ffb300] focus:ring-offset-2 focus:ring-offset-[#181a20] whitespace-normal break-words text-center relative overflow-hidden ${
