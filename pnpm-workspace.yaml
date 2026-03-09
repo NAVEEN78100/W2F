@@ -1,2 +1,5 @@
 packages:
-  - 'finalwwf'
+  - 'main-app'
+  - 'backend'
+  - 'help-hub'
+  - 'dashboard'

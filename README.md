@@ -16,14 +16,14 @@ This project consists of **4 independent applications** that work together:
 ### 1. One-Time Setup (all apps)
 
 ```bash
-# Install dependencies for root + help hub + dashboard, then seed MongoDB
+# Install dependencies for all apps
 npm run setup:all
 ```
 
 ### 2. Start Everything (single command)
 
 ```bash
-# Starts API (4000), Next.js app (3000), Help Hub (5173), Dashboard (8080)
+# Starts API, Next.js app, Help Hub, and Dashboard together
 npm run dev:all
 ```
 
@@ -34,43 +34,29 @@ npm run dev:all
 ### 3. Optional: Start Individual Services
 
 ```bash
-npm run dev:api
-npm run dev:web
+npm run dev:backend
+npm run dev:main
 npm run dev:help
 npm run dev:dashboard
 ```
 
-### 4. Stop Everything
-
-```bash
-# Stops processes using ports 3000, 4000, 5173, 8080
-npm run stop:all
-```
-
-### 5. Restart Everything
-
-```bash
-# Stops all services and starts all services again
-npm run restart:all
-```
-
-### 6. Manual Start (Legacy / Per-Service Control)
+### 4. Manual Start (Per-Service Control)
 
 Use this mode when you want to run only specific services.
 
 #### Main Application & Backend
 
 ```bash
-# Install dependencies
-npm install
-
-# Seed MongoDB with sample data
-npm run seed
-
 # Start backend API (port 4000)
-npm run api
+cd backend
+npm install
+npm run dev
+```
 
+```bash
 # Start Next.js frontend (port 3000)
+cd main-app
+npm install
 npm run dev
 ```
 
@@ -78,7 +64,7 @@ npm run dev
 
 ```bash
 # Navigate to help hub directory
-cd "public/wwf-support page/wander-with-food-help-hub-main (1)/wander-with-food-help-hub-main"
+cd help-hub
 
 # Install dependencies
 npm install
@@ -91,7 +77,7 @@ npm run dev
 
 ```bash
 # Navigate to content hub directory
-cd "public/wwf-support page/content-hub-dashboard-main (1)/content-hub-dashboard-main"
+cd dashboard
 
 # Install dependencies
 npm install
@@ -223,45 +209,23 @@ The Partners React page (`/company/partners-react`) features a custom footer mat
 
 ```
 finalwwf/
-├── app/                          # Next.js 14 app router
-│   ├── page.tsx                  # Home page
-│   ├── layout.tsx                # Root layout
-│   ├── globals.css               # Global styles
-│   ├── about/                    # About page
-│   ├── admin/                    # Admin dashboard
-│   ├── blogs/                    # Blog system
-│   ├── company/                  # Company pages
-│   │   ├── partners-react/       # Partners page with custom footer
-│   │   │   ├── page.tsx          # Server component
-│   │   │   └── footer.tsx        # Client component
-│   │   ├── grievancereactfinal/  # Grievance system
-│   │   ├── wwf-about/            # WWF about page
-│   │   └── wwf-blogs/            # WWF blogs
-│   ├── dashboard/                # Main admin dashboard
-│   ├── explore/                  # Restaurant discovery
-│   ├── feedback/                 # Feedback system
-│   └── api/                      # API routes
-├── backend/                      # Express.js backend
-│   ├── server.js                 # Main server file
-│   ├── db.js                     # MongoDB connection
-│   ├── seed.js                   # Database seeding
-│   ├── routes/                   # API routes
-│   └── middleware/               # Authentication middleware
-├── components/                   # React components
-│   ├── animations/               # Animation components
-│   ├── sections/                 # Page sections
-│   ├── ui/                       # shadcn-ui components
-│   └── AnimationSelector.tsx     # Animation demos
-├── public/                       # Static assets
-│   ├── 4 (1).png                # WWF logo
-│   ├── images/                   # Image assets
-│   └── wwf-support page/         # Embedded apps
-│       ├── wander-with-food-help-hub-main (1)/  # Help Hub
-│       └── content-hub-dashboard-main (1)/      # Content Hub
-├── lib/                          # Utility functions
-├── types/                        # TypeScript definitions
-├── hooks/                        # Custom React hooks
-└── scripts/                      # Deployment scripts
+├── backend/                      # Express API server
+│   ├── server.js
+│   ├── routes/
+│   ├── middleware/
+│   └── package.json
+├── main-app/                     # Next.js 14 application
+│   ├── app/
+│   ├── components/
+│   ├── public/
+│   └── package.json
+├── help-hub/                     # Vite + React Help Hub
+│   ├── src/
+│   └── package.json
+├── dashboard/                    # Vite + React Content Dashboard
+│   ├── src/
+│   └── package.json
+└── README.md
 ```
 
 ## 🗄️ Database Schema
@@ -300,7 +264,9 @@ finalwwf/
 
 ## ⚙️ Environment Variables
 
-Create a `.env.local` file in the root directory:
+Create env files inside each app folder (`main-app`, `backend`, `help-hub`, `dashboard`) as needed.
+
+`main-app/.env.local`
 
 ```env
 # MongoDB Configuration
@@ -329,25 +295,35 @@ EMAIL_SERVICE=gmail
 
 # Admin notifications for partner requests
 ADMIN_NOTIFY_EMAIL=admin_mail@gmail.com
+
+# Vite apps API target
+VITE_API_URL=http://localhost:5000
+# Optional override for topic feedback endpoints
+VITE_TOPIC_FEEDBACK_API_URL=http://localhost:5000
 ```
 
 ## 🚀 Deployment
 
 ### Main Application
 ```bash
-npm run build        # Build Next.js app
-npm run start        # Start production server
+npm --prefix main-app run build
+npm --prefix main-app run start
+```
+
+### Backend API
+```bash
+npm --prefix backend run start
 ```
 
 ### Help Hub
 ```bash
-cd "public/wwf-support page/wander-with-food-help-hub-main (1)/wander-with-food-help-hub-main"
-npm run build        # Build for production
+cd help-hub
+npm run build        # Build Help Hub app
 ```
 
 ### Content Hub Dashboard
 ```bash
-cd "public/wwf-support page/content-hub-dashboard-main (1)/content-hub-dashboard-main"
+cd dashboard
 npm run build        # Build for production
 ```
 

@@ -1,0 +1,9 @@
+- [ ] Update Article Model: Add slug (unique String), content (String for extracted text), pdf_url (String), sections (Array of Q&A objects)
+- [ ] Update Article Routes: Add PDF upload endpoint with text extraction, update CRUD for new fields
+- [ ] Install pdf-parse library for PDF text extraction
+- [ ] Create PDF processing utility
+- [ ] Create ArticleManager Admin Component for managing Popular Articles (add/edit/delete)
+- [ ] Create ArticleDetail Page: Display article content and Q&A sections
+- [ ] Update Support.tsx: Add links to article details, display Q&A in expandable format
+- [ ] Test PDF upload and text extraction
+- [ ] Verify admin CRUD operations

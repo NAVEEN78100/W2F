@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&family=Helvetica+Neue:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Wander With Food - Meta-style Yellow/Black Theme */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Meta-style white/blue theme */
+    --background: 0 0% 100%;
+    --foreground: 210 11% 12%;
+
+    /* White cards - Meta style */
+    --card: 0 0% 100%;
+    --card-foreground: 210 11% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 11% 12%;
+
+    /* Primary - Meta blue */
+    --primary: 214 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary */
+    --secondary: 210 17% 96%;
+    --secondary-foreground: 210 11% 12%;
+
+    /* Muted */
+    --muted: 210 17% 96%;
+    --muted-foreground: 210 11% 45%;
+
+    /* Accent - Meta blue */
+    --accent: 214 89% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 210 17% 93%;
+    --input: 0 0% 100%;
+    --ring: 214 89% 53%;
+
+    --radius: 0.5rem;
+
+    /* Header - white like Meta */
+    --header: 0 0% 100%;
+    --header-foreground: 210 11% 12%;
+
+    /* Footer */
+    --footer: 0 0% 7%;
+    --footer-foreground: 0 0% 70%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 11% 12%;
+    --sidebar-primary: 214 89% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 96%;
+    --sidebar-accent-foreground: 210 11% 12%;
+    --sidebar-border: 210 17% 93%;
+    --sidebar-ring: 214 89% 53%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 45 100% 50%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 45 100% 50%;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 45 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 45 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1C1E21;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Meta-style link hover */
+@layer utilities {
+  .meta-link {
+    @apply transition-colors duration-150;
+  }
+  
+  .meta-link:hover {
+    @apply underline;
+  }
+}
