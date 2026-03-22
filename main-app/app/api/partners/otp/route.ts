@@ -321,7 +321,7 @@ export async function POST(request: Request) {
         })
     }
 
-    return NextResponse.json({ ok: true, message: 'OTP sent successfully.' })
+    return NextResponse.json({ ok: true, message: `OTP sent successfully to ${email}.` })
   } catch (error) {
     console.error('Partner OTP API error:', error)
     return NextResponse.json({ ok: false, error: 'Failed to process OTP request.' }, { status: 500 })

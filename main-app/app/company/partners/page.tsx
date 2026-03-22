@@ -101,11 +101,11 @@ export default function PartnersPage() {
               <div className="form-grid">
                 <div>
                   <label htmlFor="leadName">Full Name *</label>
-                  <input name="Name" id="leadName" required maxLength={80} placeholder="Enter your full name" />
+                  <input type="text" name="Name" id="leadName" required maxLength={80} placeholder="Enter your full name" autoComplete="name" />
                 </div>
                 <div>
                   <label htmlFor="leadPhone">Contact Number *</label>
-                  <input name="Phone" id="leadPhone" required maxLength={30} placeholder="Enter phone number" />
+                  <input type="tel" name="Phone" id="leadPhone" required maxLength={30} placeholder="Enter phone number" inputMode="tel" autoComplete="tel" />
                 </div>
                 <div>
                   <label htmlFor="leadState">State *</label>
@@ -118,7 +118,7 @@ export default function PartnersPage() {
                 </div>
                 <div className="full">
                   <label htmlFor="leadLocation">Business Location / Address *</label>
-                  <input name="Location" id="leadLocation" required maxLength={150} placeholder="Enter business address (Street, City, Pin)" />
+                  <input type="text" name="Location" id="leadLocation" required maxLength={150} placeholder="Enter business address (Street, City, Pin)" autoComplete="street-address" />
                 </div>
               </div>
 

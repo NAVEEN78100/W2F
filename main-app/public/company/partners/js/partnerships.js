@@ -28,6 +28,24 @@
     const otpInput = qs("#otpInput");
     const otpTimerDisplay = qs("#otpTimerDisplay");
 
+    function validateLeadDetails() {
+        const requiredFields = [
+            { el: qs("#leadName"), label: "Full Name" },
+            { el: qs("#leadPhone"), label: "Contact Number" },
+            { el: qs("#leadLocation"), label: "Business Location / Address" }
+        ];
+
+        for (const field of requiredFields) {
+            if (!field.el || !String(field.el.value || "").trim()) {
+                leadMsg.textContent = `Please fill ${field.label}.`;
+                leadMsg.className = "lead-msg error";
+                field.el?.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Terms drawer variables
     const termsDrawer = document.getElementById('termsDrawer');
     const termsDrawerBackdrop = document.getElementById('termsDrawerBackdrop');
@@ -109,19 +127,6 @@
 
     // Send OTP button clicked
     sendOtpBtn?.addEventListener("click", async () => {
-        const requiredFields = [
-            { el: qs("#leadName"), label: "Full Name" },
-            { el: qs("#leadPhone"), label: "Contact Number" },
-            { el: qs("#leadLocation"), label: "Business Location / Address" }
-        ];
-        for (const field of requiredFields) {
-            if (!field.el || !String(field.el.value || "").trim()) {
-                leadMsg.textContent = `Please fill ${field.label} before requesting OTP.`;
-                leadMsg.className = "lead-msg error";
-                field.el?.focus();
-                return;
-            }
-        }
         const email = leadEmail.value.trim();
         if (!email) {
             leadMsg.textContent = "Please enter your email.";
@@ -299,6 +304,9 @@
         if (!emailVerified || extraFields.style.display === "none") {
             leadMsg.textContent = "Please verify OTP before submitting.";
             leadMsg.className = "lead-msg error";
+            return;
+        }
+        if (!validateLeadDetails()) {
             return;
         }
         if (!validateEmail(String(leadEmail?.value || '').trim())) {
