@@ -68,38 +68,38 @@ export default function HomePage() {
   const featureCards = [
     {
       icon: <Search className="w-12 h-12" />,
-      title: "Discover",
-      description: "Find amazing restaurants and hidden culinary gems near you",
+      title: "Location Based Dish Discovery",
+      description: "Find dishes around you based on your current location and cravings.",
       color: "bg-gradient-to-br from-orange-400 to-red-500",
       emoji: "🔍",
     },
     {
       icon: <Truck className="w-12 h-12" />,
-      title: "Order",
-      description: "Get your favorite meals delivered fresh to your doorstep",
+      title: "Rewards for Reviews",
+      description: "Earn rewards every time you review your food experiences.",
       color: "bg-gradient-to-br from-green-400 to-blue-500",
-      emoji: "🚚",
+      emoji: "🎁",
     },
     {
       icon: <Star className="w-12 h-12" />,
-      title: "Experience",
-      description: "Rate, review and share your culinary adventures",
+      title: "Curated Restaurants",
+      description: "Explore handpicked restaurants chosen for quality and taste.",
       color: "bg-gradient-to-br from-purple-400 to-pink-500",
       emoji: "⭐",
     },
     {
       icon: <Users className="w-12 h-12" />,
-      title: "Connect",
-      description: "Join a community of food lovers and share recommendations",
+      title: "Offers",
+      description: "Unlock personalized offers and savings from nearby restaurants.",
       color: "bg-gradient-to-br from-blue-400 to-indigo-500",
-      emoji: "👥",
+      emoji: "🏷️",
     },
     {
       icon: <Shield className="w-12 h-12" />,
-      title: "Trust",
-      description: "Verified reviews and secure payments for peace of mind",
+      title: "Events",
+      description: "Stay updated on food events, tastings, and special experiences.",
       color: "bg-gradient-to-br from-teal-400 to-cyan-500",
-      emoji: "🛡️",
+      emoji: "🎉",
     },
   ]
 
@@ -1172,12 +1172,10 @@ options in plenty"
           {/* Footer Text */}
           <div className="text-gray-400 text-sm max-w-4xl mx-auto leading-relaxed">
             <p className="mb-4">
-              © 2025 | World Wildlife Fund is dedicated to protecting wildlife and their habitats worldwide. WWF
-              operates in over 100 countries and is supported by millions of members globally.
+              © 2025 | Wander With Food (W2F) connects food lovers with unique culinary experiences across cities. Discover, explore, and taste your way through local favorites and hidden gems.
             </p>
             <p>
-              WWF is committed to conservation, research, and advocacy to ensure a sustainable future for our planet.
-              Join us in our mission to create a world where people and nature thrive together.
+              W2F is built to help people find great food, support local vendors, and turn every meal into an experience worth sharing.
             </p>
           </div>
         </div>

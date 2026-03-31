@@ -1,409 +1,165 @@
-# WWF - Wander With Food
+<p align="center">
+  <img src="main-app/public/wwf-logo.png" width="150" alt="W2F Logo" />
+</p>
 
-A comprehensive restaurant discovery platform featuring dynamic animations, admin dashboards, help hub, partner management, and feedback systems.
+<h1 align="center">Wander With Food (W2F)</h1>
+<p align="center">
+  <b>Experience the Future of Food Discovery & Restaurant Management</b>
+</p>
 
-## 🏗️ Project Overview
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react" />
+  <img src="https://img.shields.io/badge/Node.js-18-339933?logo=node.js" />
+  <img src="https://img.shields.io/badge/MongoDB-Local-47A248?logo=mongodb" />
+  <img src="https://img.shields.io/badge/Express-API-000000?logo=express" />
+  <img src="https://img.shields.io/badge/GSAP-Animations-88CE02?logo=greensock" />
+  <img src="https://img.shields.io/badge/Framer_Motion-Interactive-0055FF?logo=framer" />
+</p>
 
-This project consists of **4 independent applications** that work together:
+---
 
-1. **Main Next.js App** - Restaurant discovery platform (Port: 3000)
-2. **Backend API** - Express.js + MongoDB (Port: 4000)
-3. **Help Hub** - Support & forms system (Port: 5173)
-4. **Content Hub Dashboard** - Admin panel for content management (Port: 8080)
+## 🍕 What is W2F?
 
-## 🚀 Quick Start
+**Wander With Food (W2F)** is a high-performance, enterprise-grade restaurant discovery ecosystem designed to bridge the gap between hungry diners and local eateries. It's not just a website; it's a multi-platform suite engineered for speed, engagement, and operational efficiency.
 
-### 1. One-Time Setup (all apps)
+Built with a focus on **immersive user experience**, W2F leverages cutting-edge animation libraries to create a "liquid" interface that feels alive.
 
+### Core Ecosystem
+- 🌐 **Discovery Hub** — A Next.js-powered portal for users to explore, filter, and discover restaurants.
+- 🛠️ **Operational Backend** — A robust Node/Express API managing high-frequency data and authentication.
+- 🛡️ **Help Hub** — A dedicated support system with integrated Bug Bounty and Grievance workflows.
+- 📊 **Content Hub** — A specialized administrative dashboard for real-time content and partner management.
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    A[Public User] -->|Browses| B(Main Next.js App)
+    C[Admin/Manager] -->|Manages Content| D(Content Hub Dashboard)
+    E[Support Team] -->|Handles Forms| F(Help Hub)
+    
+    B <-->|API Calls| G[Express.js Backend]
+    D <-->|CRUD Ops| G
+    F <-->|Submissions| G
+    
+    G <-->|Data| H[(MongoDB)]
+    
+    subgraph "Frontend Layer (Port 3000, 5173, 8080)"
+    B
+    D
+    F
+    end
+    
+    subgraph "Backend Layer (Port 4000)"
+    G
+    end
+    
+    subgraph "Database Layer"
+    H
+    end
+```
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| 🎭 **Kinetic UI** | Fluid animations using GSAP and Framer Motion for a premium, high-end feel. |
+| 🔍 **Pro-Grade Discovery** | Advanced multi-dimensional filtering by cuisine, district, rating, and distance. |
+| 👨‍💼 **Unified Admin** | Full CRUD operations for restaurant menus, featured categories, and real-time updates. |
+| 🛡️ **Grievance System** | Formal compliance and feedback channels with dedicated support tracking. |
+| 🤝 **Partner Portal** | Exclusive partner management tools with custom branded footers and OTP authentication. |
+| 📈 **Real-time Analytics** | Live dashboard metrics for restaurant performance and site traffic. |
+| 🚀 **Hybrid Rendering** | Strategic use of Server-Side Rendering (SSR) and Client-Side Rendering (CSR) for SEO and speed. |
+| 📸 **Media Library** | Centralized asset management for restaurant galleries and promotional banners. |
+
+---
+
+## 🛠️ Tech Stack
+
+### Core Technologies
+| Layer | Tech Stack |
+| :--- | :--- |
+| **Frontend Framework** | Next.js 14 (App Router), React 18 |
+| **Styling** | Tailwind CSS 3, Shadcn/UI |
+| **Animations** | GSAP (ScrollTrigger), Framer Motion |
+| **Backend API** | Node.js, Express.js (NestJS architecture) |
+| **Database** | MongoDB (Local/Atlas) |
+| **Authentication** | JWT Bearer Tokens + OTP Service (Gmail SMTP) |
+| **State Management** | React Context + Local Persistence |
+| **Tooling** | Vite (for sub-apps), PNPM Workspace |
+
+### UI Design System
+- **Primary Color:** `#FFD402` (Vibrant Yellow)
+- **Secondary Color:** `#1F2937` (Charcoal Black)
+- **Typography:** Inter / Custom Modern Sans-Serif
+- **Interactive Elements:** Glassy gradients, hover scales, and liquid transitions.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- **Node.js** ≥ 18
+- **MongoDB** Local Service
+- **NPM / PNPM** package manager
+
+### 1. Installation & Setup
+Clone the repository and install all dependencies using the root workspace command:
 ```bash
-# Install dependencies for all apps
+# Install dependencies for the entire monorepo
 npm run setup:all
 ```
 
-### 2. Start Everything (single command)
+### 2. Configuration
+Create a `.env.local` in `main-app/` and `backend/` using the following template:
+```env
+MONGODB_URI=mongodb://localhost:27017/wwf
+NEXT_PUBLIC_API_URL=http://localhost:4000
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+```
 
+### 3. Launching the Ecosystem
+You can start all services simultaneously with a single command:
 ```bash
-# Starts API, Next.js app, Help Hub, and Dashboard together
+# Starts API (4000), Main App (3000), Help Hub (5173), and Dashboard (8080)
 npm run dev:all
 ```
 
-**Main App URL**: http://localhost:3000  
-**Help Hub URL**: http://localhost:5173  
-**Dashboard URL**: http://localhost:8080
-
-### 3. Optional: Start Individual Services
-
-```bash
-npm run dev:backend
-npm run dev:main
-npm run dev:help
-npm run dev:dashboard
-```
-
-### 4. Manual Start (Per-Service Control)
-
-Use this mode when you want to run only specific services.
-
-#### Main Application & Backend
-
-```bash
-# Start backend API (port 4000)
-cd backend
-npm install
-npm run dev
-```
-
-```bash
-# Start Next.js frontend (port 3000)
-cd main-app
-npm install
-npm run dev
-```
-
-#### Help Hub (Support System)
-
-```bash
-# Navigate to help hub directory
-cd help-hub
-
-# Install dependencies
-npm install
-
-# Start help hub (port 5173)
-npm run dev
-```
-
-#### Content Hub Dashboard (Admin Panel)
-
-```bash
-# Navigate to content hub directory
-cd dashboard
-
-# Install dependencies
-npm install
-
-# Start dashboard (port 8080)
-npm run dev
-```
-
-## 🎨 Tech Stack
-
-### Main Application
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui components
-- **Animations**: GSAP + Framer Motion
-- **Architecture**: Hybrid server/client components
-
-### Backend
-- **Runtime**: Node.js + Express.js
-- **Database**: MongoDB (local)
-- **Authentication**: Bearer token-based
-- **Port**: 4000
-
-### Help Hub
-- **Framework**: Vite 5.4.19 + React
-- **Language**: TypeScript
-- **UI**: shadcn-ui + Tailwind CSS
-- **Port**: 5173
-
-### Content Hub Dashboard
-- **Framework**: Vite + React
-- **Language**: TypeScript
-- **Port**: 8080
-
-## 🌐 Application URLs & Features
-
-### Main Application (Port 3000)
-
-#### Public Pages
-- **Home** - `/` - Landing page with animations
-- **Explore** - `/explore` - Restaurant discovery with filters
-- **About** - `/about` - Company information
-- **Blogs** - `/blogs` - Content management system
-- **Contact** - `/contact` - Contact form
-- **Feedback** - `/feedback` - User feedback system
-- **Support** - `/support` - Help center access
-- **Media Assets** - `/media-assets` - Media library
-
-#### Company Pages
-- **Partners React** - `/company/partners-react` - Partner management with custom footer
-- **Grievance System** - `/company/grievancereactfinal` - Grievance submissions
-- **WWF About** - `/company/wwf-about` - Additional about page
-- **WWF Blogs** - `/company/wwf-blogs` - Blog management
-
-#### Admin Dashboard
-- **URL**: http://localhost:3000/dashboard (or `/admin`)
-- **Username**: `naveen`
-- **Password**: `name_sake`
-- **Features**:
-  - Full CRUD operations for restaurants
-  - Image upload and management
-  - Featured restaurant selection
-  - Category and cuisine management
-  - Real-time data updates
-
-### Help Hub (Port 5173)
-
-#### Forms & Pages
-- **Bug Bounty** - http://localhost:5173/bug-bounty
-  - Submit security vulnerabilities
-  - Formal black/yellow UI with WWF logo
-  
-- **General Feedback** - http://localhost:5173/general-feedback
-  - User feedback submission
-  - Professional styling with yellow accents
-  
-- **Grievance Form** - http://localhost:5173/grievance
-  - W2F grievance submissions
-  - Yellow-highlighted W2F branding
-
-**Admin Credentials**:
-- Email: admin@gmail.com
-- Password: admin123
-
-### Content Hub Dashboard (Port 8080)
-- **URL**: http://localhost:8080
-- **Purpose**: Content management and administration
-- **Admin Login**: Same as help hub credentials
-
-## 🔐 Authentication & Credentials
-
-### Main App Admin Dashboard
-- **Username**: `naveen`
-- **Password**: `name_sake`
-- **Access**: http://localhost:3000/dashboard
-
-### Help Hub & Content Hub
-- **Email**: admin@gmail.com
-- **Password**: admin123
-
-### API Authentication
-- Bearer token required for POST, PUT, DELETE operations
-- Token generated on admin login
-
-## 🎨 Design System
-
-### Color Scheme
-- **Primary**: Yellow (#FFD402, yellow-500/600) - Branding & CTAs
-- **Secondary**: Black/Dark Gray (gray-800/900) - Headers & backgrounds
-- **Accent**: White - Content areas
-- **Borders**: Yellow with 30% opacity (yellow-500/30)
-
-### Form Styling
-All help hub forms feature:
-- Lightened backgrounds: `bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800`
-- Yellow border accents: `border-2 border-yellow-500/30`
-- Large submit buttons: `bg-gradient-to-r from-yellow-500 to-yellow-600 py-6`
-- WWF logo positioned at top right corner
-- Professional, formal appearance
-
-### Footer Implementation
-The Partners React page (`/company/partners-react`) features a custom footer matching the home page:
-- **White Footer Section**: Expandable cards (Partner, Problem, Help), 4-column navigation
-- **Black W2F Section**: Language selector, mission cards, animated W/2/F images
-- **Bottom Section**: Shield certification + social icons (Instagram, Twitter, Facebook, YouTube, LinkedIn)
-- **Component Architecture**: Hybrid - server component (page.tsx) + client component (footer.tsx)
+---
 
 ## 📁 Project Structure
 
-```
-finalwwf/
-├── backend/                      # Express API server
-│   ├── server.js
-│   ├── routes/
-│   ├── middleware/
-│   └── package.json
-├── main-app/                     # Next.js 14 application
-│   ├── app/
-│   ├── components/
-│   ├── public/
-│   └── package.json
-├── help-hub/                     # Vite + React Help Hub
-│   ├── src/
-│   └── package.json
-├── dashboard/                    # Vite + React Content Dashboard
-│   ├── src/
-│   └── package.json
-└── README.md
+```text
+W2F/
+├── main-app/           # Next.js 14 - Primary Consumer Interface
+├── backend/            # Express.js - Central API Gateway
+├── help-hub/           # Vite/React - Support & Feedback Forms
+├── dashboard/          # Vite/React - Admin & Content Management
+├── scripts/            # Automation & Setup Utilities
+└── docker/             # Containerization configurations
 ```
 
-## 🗄️ Database Schema
+---
 
-### Restaurant Model
-- **id**: Incremental numeric identifier (e.g., 1, 2, 3)
-- **name**: Restaurant display name
-- **cuisine**: Primary cuisine type (Indian, Italian, Chinese, etc.)
-- **rating**: Number 0–5 (supports decimals like 4.3)
-- **image**: Absolute URL of cover image
-- **district**: City area/region (Koramangala, Indiranagar, etc.)
-- **deliveryTime**: Estimated time string (e.g., "30–40 mins")
-- **distance**: Distance string (e.g., "2.1 km")
-- **category**: Grouping tag (veg, family, casual, fine-dining)
-- **priceRange**: Price indicator (₹, ₹₹, ₹₹₹)
-- **emoji**: Visual accent emoji (🍛, 🍕, 🍜)
-- **signatureDish**: Highlighted dish for promotions
-- **featured**: Boolean - appears in featured sections
-- **featuredCategory**: `ambience` or `dishes`
+## 🔒 Security & Compliance
+- **Authenticated Routes:** Admin and Partner dashboards protected via secure JWT tokens.
+- **Data Validation:** Strict Mongoose schemas for all restaurant and user submissions.
+- **Environment Isolation:** All sensitive keys (Stripe, SMTP, DB) managed via secure `.env` files.
+- **Rate Limiting:** API protection to prevent brute-force attacks on submission endpoints.
 
-## 🔌 Backend API Endpoints
-
-### Restaurant Operations
-- **GET** `/restaurants/all` - Fetch all restaurants
-- **POST** `/restaurants` - Create new restaurant (auth required)
-- **PUT** `/restaurants/:id` - Update restaurant (auth required)
-- **DELETE** `/restaurants/:id` - Delete restaurant (auth required)
-
-### Explore & Discovery
-- **GET** `/explore/*` - Explore page data with filters
-
-### Form Submissions
-- **POST** `/api/feedback` - Submit feedback
-- **POST** `/api/bug-bounty` - Submit bug report
-- **POST** `/api/grievance` - Submit grievance
-
-## ⚙️ Environment Variables
-
-Create env files inside each app folder (`main-app`, `backend`, `help-hub`, `dashboard`) as needed.
-
-`main-app/.env.local`
-
-```env
-# MongoDB Configuration
-MONGODB_URI=mongodb://127.0.0.1:27017
-MONGODB_DB=wwf
-
-# Backend Configuration
-PORT=4000
-NEXT_PUBLIC_API_URL=http://localhost:4000
-
-# Admin Credentials (optional)
-ADMIN_USERNAME=naveen
-ADMIN_PASSWORD=name_sake
-
-# Partner OTP Email (Gmail SMTP)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_mail@gmail.com
-SMTP_PASS=your_gmail_app_password
-SMTP_FROM="Wander With Food <your_mail@gmail.com>"
-
-# Backward-compatible email keys
-EMAIL_USER=your_mail@gmail.com
-EMAIL_PASSWORD=your_gmail_app_password
-EMAIL_SERVICE=gmail
-
-# Admin notifications for partner requests
-ADMIN_NOTIFY_EMAIL=admin_mail@gmail.com
-
-# Vite apps API target
-VITE_API_URL=http://localhost:5000
-# Optional override for topic feedback endpoints
-VITE_TOPIC_FEEDBACK_API_URL=http://localhost:5000
-```
-
-## 🚀 Deployment
-
-### Main Application
-```bash
-npm --prefix main-app run build
-npm --prefix main-app run start
-```
-
-### Backend API
-```bash
-npm --prefix backend run start
-```
-
-### Help Hub
-```bash
-cd help-hub
-npm run build        # Build Help Hub app
-```
-
-### Content Hub Dashboard
-```bash
-cd dashboard
-npm run build        # Build for production
-```
-
-## 📝 Key Features
-
-### 🎭 Animations
-- GSAP scroll animations
-- Framer Motion interactive components
-- Phone carousel animations
-- Scroll velocity effects
-- Variable proximity animations
-- Split text animations
-
-### 🔍 Restaurant Discovery
-- Advanced filtering by cuisine, district, price
-- Featured restaurants (ambience & dishes)
-- Real-time search
-- Rating and distance sorting
-
-### 👨‍💼 Admin Features
-- Full CRUD operations
-- Image upload and management
-- Restaurant featured status
-- Category management
-- Real-time updates
-
-### 🛡️ Help & Support
-- Bug bounty program
-- General feedback system
-- Grievance submissions
-- Professional form UI with WWF branding
-- Admin panel for managing submissions
-
-### 🤝 Partner Management
-- Custom partners page
-- Dedicated footer matching home page
-- Expandable information cards
-- Mission statement and values
-- Social media integration
-
-## 📚 Additional Documentation
-
-- **Admin Dashboard Guide**: See `ADMIN_DASHBOARD_GUIDE.md`
-- **Partners Guide**: See `PARTNERS_RUN.md`
-- **Pre-Share Checklist**: See `PRE_SHARE_CHECKLIST.md`
-
-## 🐛 Known Issues & Solutions
-
-### Port Conflicts
-If ports are already in use:
-```bash
-# Find and kill process on port 3000 (Windows)
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# Change port in package.json
-"dev": "next dev -p 3001"
-```
-
-### MongoDB Connection
-Ensure MongoDB is running:
-```bash
-# Start MongoDB service (Windows)
-net start MongoDB
-
-# Or use MongoDB Compass GUI
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+---
 
 ## 📄 License
+This project is provided for educational and enterprise demonstration purposes. All rights reserved.
 
-This project is proprietary and confidential.
+<hr />
 
-## 👥 Contact
-
-For support or inquiries, use the help hub forms at http://localhost:5173
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/NAVEEN78100">Naveen D</a> and Team
+</p>

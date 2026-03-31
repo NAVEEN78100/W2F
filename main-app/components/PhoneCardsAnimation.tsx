@@ -109,11 +109,11 @@ export default function PhoneCardsAnimation({ featureCards }: PhoneCardsAnimatio
               marginTop: "-4.5rem", // Half of card height (36/4 = 9rem, 9/2 = 4.5rem)
               background:
                 index === 0
-                  ? "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)" // Green exchange card
+                  ? "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)" // Green feature card
                   : index === 1
-                    ? "linear-gradient(135deg, #f8b4cb 0%, #f472b6 100%)" // Pink payment card
+                    ? "linear-gradient(135deg, #f8b4cb 0%, #f472b6 100%)" // Pink feature card
                     : index === 2
-                      ? "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)" // Blue balance card
+                      ? "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)" // Blue feature card
                       : index === 3
                         ? "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)" // Purple card
                         : "linear-gradient(135deg, #fb923c 0%, #f97316 100%)", // Orange card
@@ -126,60 +126,31 @@ export default function PhoneCardsAnimation({ featureCards }: PhoneCardsAnimatio
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-bold">
                   {card.emoji}
                 </div>
-                <span className="text-white font-medium text-sm">
-                  {index === 0 ? "Exchange" : index === 1 ? "Payment" : index === 2 ? "Balance" : card.title}
+                <span
+                  className="text-white font-bold text-[13px] sm:text-[15px] leading-tight tracking-tight"
+                  style={{
+                    fontFamily: "'Sora', 'Poppins', 'Avenir Next', 'Segoe UI', sans-serif",
+                    textShadow: "0 1px 8px rgba(0,0,0,0.18)",
+                  }}
+                >
+                  {card.title}
                 </span>
               </div>
-              {index === 0 && (
-                <div className="flex items-center space-x-1 text-white text-xs">
-                  <span className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
-                    €
-                  </span>
-                  <span>EUR</span>
-                </div>
-              )}
             </div>
 
             <div className="text-white">
-              {index === 0 && (
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold">€500.00</div>
-                  <div className="text-sm opacity-80">+ zł2,179.92</div>
+              <div className="space-y-1">
+                <div
+                  className="text-[11px] sm:text-[13px] opacity-95 leading-[1.3] font-medium"
+                  style={{
+                    fontFamily: "'Manrope', 'Inter', 'Segoe UI', sans-serif",
+                    textShadow: "0 1px 6px rgba(0,0,0,0.14)",
+                  }}
+                >
+                  {card.description}
                 </div>
-              )}
-              {index === 1 && (
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-white rounded-full"></div>
-                    <span className="text-sm font-medium">Jane Thomas</span>
-                  </div>
-                  <div className="text-xs opacity-80 flex items-center space-x-1">
-                    <span>🔒</span>
-                    <span>Secure payment</span>
-                  </div>
-                </div>
-              )}
-              {index === 2 && (
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold">€1000</div>
-                  <div className="text-sm opacity-80">Balance: €4,921.22</div>
-                </div>
-              )}
-              {index > 2 && (
-                <div className="space-y-1">
-                  <div className="text-lg font-bold">{card.title}</div>
-                  <div className="text-xs opacity-80">{card.description}</div>
-                </div>
-              )}
-            </div>
-
-            {(index === 1 || index === 2) && (
-              <div className="mt-2">
-                <button className="w-full bg-white/20 backdrop-blur-sm rounded-xl py-2 text-white text-sm font-medium">
-                  Send
-                </button>
               </div>
-            )}
+            </div>
           </motion.div>
         ))}
 

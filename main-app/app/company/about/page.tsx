@@ -628,12 +628,10 @@ export default function AboutPage() {
           {/* Footer Text */}
           <div className="text-gray-400 text-sm max-w-4xl mx-auto leading-relaxed">
             <p className="mb-4">
-              © 2025 | World Wildlife Fund is dedicated to protecting wildlife and their habitats worldwide. WWF
-              operates in over 100 countries and is supported by millions of members globally.
+              © 2025 | Wander With Food (W2F) connects food lovers with unique culinary experiences across cities. Discover, explore, and taste your way through local favorites and hidden gems.
             </p>
             <p>
-              WWF is committed to conservation, research, and advocacy to ensure a sustainable future for our planet.
-              Join us in our mission to create a world where people and nature thrive together.
+              W2F is built to help people find great food, support local vendors, and turn every meal into an experience worth sharing.
             </p>
           </div>
         </div>

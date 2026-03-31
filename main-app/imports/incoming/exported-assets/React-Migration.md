@@ -1235,7 +1235,7 @@ const FooterSection = () => {
 
         <div className="footer-bottom">
           <div className="footer-certifications">
-            <p>© 2025 | World Wildlife Fund</p>
+            <p>© 2025 | Wander With Food (W2F)</p>
           </div>
           <p style={{ color: '#f97316' }}>Made by BINI</p>
         </div>

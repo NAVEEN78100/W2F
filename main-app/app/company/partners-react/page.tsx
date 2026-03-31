@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import PartnersFooter from './footer'
+import PartnersIframe from './partners-iframe'
 
 export default function PartnersReactPage() {
   const publicDir = path.join(process.cwd(), 'public', 'company', 'partners-react')
@@ -16,9 +17,7 @@ export default function PartnersReactPage() {
   } catch (e) {}
 
   const partnersContent = htmlFiles.length > 0 ? (
-    <div style={{ width: '100%', height: '100vh' }}>
-      <iframe title="Partners React" src={`/company/partners-react/${entryFile}`} style={{ width: '100%', height: '100%', border: 'none' }} />
-    </div>
+    <PartnersIframe title="Partners React" src={`/company/partners-react/${entryFile}`} />
   ) : (
     <div style={{ padding: 20 }}>
       <h2>Partners (React import)</h2>

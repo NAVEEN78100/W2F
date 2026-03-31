@@ -168,21 +168,23 @@ export default function ExplorePage() {
   }, [searchQuery, selectedDistrict])
 
   const restaurantLogos = [
-    { name: 'Indian', logo: '🍛' },
+    { name: 'South Indian', logo: '🥥' },
+    { name: 'North Indian', logo: '🍲' },
     { name: 'Chinese', logo: '🥡' },
+    { name: 'Thai', logo: '🍤' },
     { name: 'Italian', logo: '🍝' },
-    { name: 'Thai', logo: '🍜' },
     { name: 'Mexican', logo: '🌮' },
-    { name: 'BBQ', logo: '🍖' },
     { name: 'Seafood', logo: '🦞' },
-    { name: 'Cafe', logo: '☕' },
-    { name: 'Desserts', logo: '🍰' },
+    { name: 'Arabic', logo: '🥙' },
+    { name: 'Continental', logo: '🍽️' },
+    { name: 'Japanese', logo: '🍣' },
+    { name: 'Korean', logo: '🍱' },
+    { name: 'Mediterranean', logo: '🫒' },
+    { name: 'Lebanese', logo: '🧆' },
+    { name: 'American', logo: '🥩' },
     { name: 'Vegan', logo: '🥗' },
-    { name: 'Biryani', logo: '🍚' },
-    { name: 'Tandoori', logo: '🍗' },
-    { name: 'Noodles', logo: '🍜' },
-    { name: 'Pizza', logo: '🍕' },
-    { name: 'Burgers', logo: '🍔' }
+    { name: 'Cafe', logo: '☕' },
+    { name: 'Desserts', logo: '🍰' }
   ];
 
   const featuredList = (() => {
